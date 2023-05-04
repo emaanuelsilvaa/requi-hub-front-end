@@ -5,7 +5,7 @@ import api from "../../services/api";
 import withAuth from "../../components/withAuth";
 import Box from "@mui/material/Box";
 
-import { Form, Container, DragDropContainer } from "./styles";
+import { Form, DragDropContainer } from "./styles";
 import TextField from "@mui/material/TextField";
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import Chip from "@mui/material/Chip";
@@ -22,14 +22,27 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 
-const filter = createFilterOptions<CategoryOptionType>();
+import Modal from '@mui/material/Modal';
+import Paper from "@mui/material/Paper";
+import Avatar from "@mui/material/Avatar";
+import IconButton from "@mui/material/IconButton";
 
-interface CategoryOptionType {
+import DeleteIcon from '@mui/icons-material/Delete';
+import Divider from "@mui/material/Divider";
+import GitHubIcon from '@mui/icons-material/GitHub';
+
+/// PDF
+import {Document, Page, pdfjs } from 'react-pdf/dist/esm/entry.webpack'
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+
+
+const filter = createFilterOptions<OptionType>();
+
+interface OptionType {
     id?: number;
     inputValue?: string;
-    title: string;
     type?: string;
-    year?: number;
+    
 }
 
 export interface Catalog { 
@@ -45,6 +58,13 @@ export interface Catalog {
 function timeout(delay: number) {
     return new Promise( res => setTimeout(res, delay) );
 }
+
+const modalStyle = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+  };
 
 const style = {
     "& label.Mui-focused": {
@@ -65,10 +85,27 @@ const style = {
   
 const CreateCatalog = () => {
 
-    const [categoryTypesFromBack, setCategoryTypesFromBack] = useState<CategoryOptionType[]>([]);
+    pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
+
+    //PDF
+    const [numPdfPages, setNumPdfPages] = React.useState(null);
+    const [pagePdfNumber, setPdfPageNumber] = React.useState(1);
+    //
+
+    const [flexBasis, setFlexBasis] = React.useState(500);
+
+    const [hasSelectedFile, setHasSelectedFile] = React.useState(false);
+
+    const [notIsPdfFile, setNotIsPdfFile] = React.useState(true);
+
+
+    const [categoryTypesFromBack, setCategoryTypesFromBack] = useState<OptionType[]>([]);
+    const [representationTypes, setRepresentationTypes] = useState<OptionType[]>([]);
+
     const [ error, setError ] = useState("");
     const [openSnackBar, setOpenSnackBar] = React.useState(false);
     const [openBackDrop, setOpenBackDrop] = React.useState(false);
+    const [openBackDropDialog, setOpenBackDropDialog] = React.useState(false);
     const [openSnackBarSuccess, setOpenSnackBarSuccess] = React.useState(false);
     const navigate = useNavigate();
     const [ title, setTitle ] = useState("");
@@ -83,14 +120,19 @@ const CreateCatalog = () => {
     const [ subjectTags, setSubjectTags ] = useState([]);
     const [ selectedFile, setSelectedFile ] = useState<any>()
 
-    const [value, setValue] = React.useState<CategoryOptionType | null>(null);
-    const [open, toggleOpen] = React.useState(false);
+    const [categoryValue, setCategoryValue] = React.useState<OptionType | null>(null);
+    const [representationValue, setRepresentationValue] = React.useState<OptionType | null>(null);
+
+    const [open, toggleCategoryOpen] = React.useState(false);
+    const [openRepresentation, toggleRepresentationyOpen] = React.useState(false);
 
     const [dialogValue, setDialogValue] = React.useState({
-        title: '',
-        year: '',
         type: '',
     });
+
+    const [openImageModal, setOpenImageModal] = React.useState(false);
+    const handleOpenImageModal = () => setOpenImageModal(true);
+    const handleCloseImageModal = () => setOpenImageModal(false);
 
 
     /* VALIDATIONS */
@@ -104,6 +146,27 @@ const CreateCatalog = () => {
         }
     }
 
+    //PDF
+    const onDocumentLoadSuccess = ({ numPages }) => {
+        setNotIsPdfFile(false);
+		setNumPdfPages(numPages);
+        setPdfPageNumber(1);
+	};
+    const goToPrevPage = (offset) =>
+        setPdfPageNumber(pagePdfNumber - 1 <= 1 ? 1 : pagePdfNumber - 1);
+
+	const goToNextPage = () =>
+        setPdfPageNumber(
+			pagePdfNumber + 1 >= numPdfPages ? numPdfPages : pagePdfNumber + 1,
+		);
+
+    async function getAnsRepresentations(){
+        /* inserir trycatch */
+        let output = await api.get("/api/v1/catalog/representation_type/representations");
+        return setRepresentationTypes(output.data.content);
+     
+    };
+
     async function getAnsCategory(){
         /* inserir trycatch */
         let output = await api.get("/api/v1/catalog/category");
@@ -112,6 +175,7 @@ const CreateCatalog = () => {
     };
     useEffect(() => {
         getAnsCategory();
+        getAnsRepresentations();
     },[])
 
     const handleSignIn = async e  => {
@@ -132,7 +196,7 @@ const CreateCatalog = () => {
             },
             subjectTags: objTags
         }
-        console.log(JSON.stringify(catalog));
+        console.log("================"+JSON.stringify(catalog));
 
         if(!validateCatalogfields(catalog) ){
             try{
@@ -167,32 +231,63 @@ const CreateCatalog = () => {
 
     const handleClose = () => {
         setDialogValue({
-        title: '',
-        year: '',
         type: '',
         });
-        toggleOpen(false);
+        toggleCategoryOpen(false);
     };
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleRepresentationClose = () => {
+        setDialogValue({
+        type: '',
+        });
+        toggleRepresentationyOpen(false);
+    };
+
+
+    const handleCategoryTypeSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        setValue({
-        title: dialogValue.title,
-        year: parseInt(dialogValue.year, 10),
-        type: dialogValue.title,
+        setOpenBackDropDialog(!openBackDropDialog)
+        await timeout(1000);
+        setCategoryValue({
+        type: dialogValue.type,
         });
         // post to back. 
         try{
-            const response = await api.post("/api/v1/catalog/category/create", {type: dialogValue.title  } );
+            const response = await api.post("/api/v1/catalog/category/create", {type: dialogValue.type  } );
             setCategoryTypesFromBack(types => ({ ...types }));
+            setOpenBackDropDialog(openBackDropDialog)
         }catch(err){
-
+            setOpenBackDropDialog(openBackDropDialog)
         }
         getAnsCategory()
         handleClose();
     }
 
+    const handleRepresentationTypeSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setOpenBackDropDialog(!openBackDropDialog)
+        await timeout(1000);
+        setRepresentationValue({
+            type: dialogValue.type,
+            });
+        // post to back. 
+        try{
+            const response = await api.post("/api/v1/catalog/representation_type/create", {type: dialogValue.type  } );
+            setRepresentationTypes(types => ({ ...types }));
+            setOpenBackDropDialog(openBackDropDialog)
+        }catch(err){
+            setOpenBackDropDialog(openBackDropDialog)
+        }
+        getAnsRepresentations()
+        handleRepresentationClose();
+    }
+
     const changeHandler=(e) => {
+        console.log("===typefile="+ e.target.files[0].type);
+        if(e.target.files[0].type == "application/pdf"){ setNotIsPdfFile(false)}
+        else{
+            setNotIsPdfFile(true)
+        }
         setAttachment({
             selectedFile: "",
             fileType: e.target.files[0].type,
@@ -200,15 +295,59 @@ const CreateCatalog = () => {
          });
 
          setSelectedFile(e.target.files[0]);
+         setHasSelectedFile(true);
     }
 
+    const removeSelectedFile=(e) => {
+        setHasSelectedFile(false);
+        setSelectedFile(null);
+    }
+    
+
     return(
-        <div>
+        <Box
+        sx={{
+            bgcolor: '#eee',
+        }}   
+        >
+            <Modal
+                open={openImageModal}
+                onClose={handleCloseImageModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                closeAfterTransition
+                style={{ overflow: 'scroll' }}
+            >
+                {notIsPdfFile ?
+                    <Box  sx={modalStyle}>
+                    <Button sx={{marginRight: 10, color: '#FFF'}} onClick={e => setOpenImageModal(false)}>Fechar</Button>
+                    <Paper variant="outlined">
+                        <img src={selectedFile != null ? URL.createObjectURL(selectedFile) : ""} />
+                    </Paper>
+                    </Box>
+                    :
+                    <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        minHeight="100vh"
+                    >   
+                        <Document file={selectedFile != null ? URL.createObjectURL(selectedFile) : ""} onLoadSuccess={onDocumentLoadSuccess} >
+                        <Button sx={{marginRight: 10, color: '#FFF'}} onClick={e => setOpenImageModal(false)}>Fechar</Button>
+                            {Array.from(
+                                new Array(numPdfPages),
+                                (el,index) => 
+                                <Page  renderTextLayer={false}  renderAnnotationLayer={true} size="A4" key={`page_${index+1}`} pageNumber={index+1}/>
+                            )}
+                        </Document>
+                    </Box>    
+                }
+            </Modal>
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                 open={openBackDrop}
             >
-                <CircularProgress color="inherit" />
+            <CircularProgress color="inherit" />
             </Backdrop>
             <Snackbar open={openSnackBar} autoHideDuration={6000} onClose={handleClose}  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
                 <Alert onClose={handleClose} severity="warning" sx={{ width: '100%' }}>
@@ -227,64 +366,91 @@ const CreateCatalog = () => {
                 justifyContent: 'center',
                 flexDirection: 'column',
                 p: 1,
-                m: 4,
+                ml: 20,
+                mr: 20,
+                mt: 5,
+                mb: 5,
                 borderRadius: 4,
-                bgcolor: '#eee',
+                bgcolor: '#fff',
             }}   
             >
-                <Typography mt={2} mb={0} fontFamily='Poppins' color={'#7B1026'} fontSize={30} align={"center"}> Criar Catalogo</Typography>
+                <Typography mt={2} mb={0} fontWeight="md" fontFamily='Poppins' color={'#7B1026'} fontSize={30} align={"center"}> Criar Catalogo</Typography>
                 <Box
                     sx={{
                         display: 'flex',
                         justifyContent: 'center',
-                        bgcolor: '#eee',
+                        flexDirection: 'row',
+                        bgcolor: '#fff',
                         borderRadius: 4,
                         }}  
                 >
                     <div>
-                        
                         <DragDropContainer>
-                        <p>  </p>
-                        <div className="form-group files color">
-                            <label>
-                                <DriveFolderUploadIcon className="upload-btn" sx={{ color: '#7B1026', alignSelf: 'center', width: 60, height: 40, paddingY: 13 }} ></DriveFolderUploadIcon>
-                                <input type="file" name="myfile" style={{display: 'none' }} onChange={changeHandler}></input>
+                            {hasSelectedFile ?
+                                notIsPdfFile ? 
+                                    <Box>
+                                        <Box sx={{cursor: 'pointer',}}onClick={e=> (setOpenImageModal(true))}>
+                                            <Avatar variant={"rounded"} alt="The image" src={URL.createObjectURL(selectedFile)} style={{
+                                                width: 400,
+                                                height: 250,}}>
+                                            </Avatar>
+                                        </Box>
+                                        <IconButton aria-label="delete" size="small" onClick={removeSelectedFile}>
+                                            <DeleteIcon fontSize="small" />
+                                        </IconButton> 
+                                    </Box>      
+                                :
+                                    <Box>
+                                    <Box sx={{cursor: 'pointer',}} onClick={e=> (setOpenImageModal(true))}>
+                                        <Document file={URL.createObjectURL(selectedFile)} onLoadSuccess={onDocumentLoadSuccess} >
+                                        <Page  renderTextLayer={false}  renderAnnotationLayer={true} pageNumber={pagePdfNumber} 
+                                        height={250}
+                                        >
+                                        </Page>
+                                        </Document>
+                                    </Box>
+                                    <IconButton aria-label="delete" size="small" onClick={removeSelectedFile}>
+                                        <DeleteIcon fontSize="small" />
+                                    </IconButton> 
+                                    </Box>
+                             :
+                             <label style={{ cursor: 'pointer' }}>
+                                <DriveFolderUploadIcon className="upload-btn" sx={{cursor: 'pointer', color: '#7B1026', alignSelf: 'center', width: 60, height: 40, paddingY: 10 }} >
+                                
+                                </DriveFolderUploadIcon>
+                                <Typography mb={0} fontFamily='Poppins' color={'#7B1026'} fontSize={20} align={"center"}> Clique para carregar um arquivo</Typography>
+                                <Typography mb={0} fontFamily='Poppins' color={'#7B1026'} fontSize={13} align={"center"}> Arquivos suportados: PDF, JPEG, PNG</Typography>
+                                <input type="file" name="myfile" style={{display: 'none', cursor: 'pointer' }} onChange={changeHandler}></input>
                             </label>
-                            
-                        </div>
+                            }    
                         </DragDropContainer>
                     </div>
-                
-                    <Box>
+                    
+                    <Box sx={{bgcolor: '#fff'}}>
                         <Form onSubmit={handleSignIn}>
                             {error && <p>{error}</p>}
                             <TextField sx={style} id="standard-text" label="Titulo" variant="standard"  onChange={e => setTitle(e.target.value) } />
                             <TextField sx={style} id="standard-description" label="Descrição" variant="standard"  onChange={e => setDescription(e.target.value) } />
-                            <TextField sx={style} id="standard-category" label="Categoria Tipo" variant="standard" onChange={e => setCategoryType(e.target.value) } />
                             
                             <Autocomplete
                             sx={style}
-                            value={value}
+                            value={representationValue}
                             onChange={(event, newValue) => {
                             if (typeof newValue === 'string') {
                                 // timeout to avoid instant validation of the dialog's form.
                                 setTimeout(() => {
-                                toggleOpen(true);
+                                toggleRepresentationyOpen(true);
                                 setDialogValue({
-                                    title: newValue,
-                                    year: '',
                                     type: newValue,
                                 });
                                 });
                             } else if (newValue && newValue.inputValue) {
-                                toggleOpen(true);
+                                toggleRepresentationyOpen(true);
                                 setDialogValue({
-                                title: newValue.inputValue,
-                                year: '',
                                 type: newValue.inputValue,
                                 });
                             } else {
-                                setValue(newValue);
+                                setRepresentationValue(newValue);
                             }
                             }}
                             filterOptions={(options, params) => {
@@ -293,15 +459,14 @@ const CreateCatalog = () => {
                             if (params.inputValue !== '') {
                                 filtered.push({
                                 inputValue: params.inputValue,
-                                title: `Add "${params.inputValue}"`,
-                                type: `Add "${params.inputValue}"`
+                                type: `Add "${params.inputValue}"`,
                                 });
                             }
 
                             return filtered;
                             }}
                             id="free-solo-dialog-demo"
-                            options={categoryTypesFromBack}
+                            options={representationTypes}
                             getOptionLabel={(option) => {
                             // e.g value selected with enter, right from the input
                             if (typeof option === 'string') {
@@ -312,7 +477,7 @@ const CreateCatalog = () => {
                                 setRepresentationType(option.inputValue);
                                 return option.inputValue;
                             }
-                            setRepresentationType(option.title);
+                            setRepresentationType(option.type);
                             return option.type;
                             }}
                             selectOnFocus
@@ -320,7 +485,98 @@ const CreateCatalog = () => {
                             handleHomeEndKeys
                             renderOption={(props, option) => <li  {...props}>{option.type}</li>}
                             freeSolo
-                            renderInput={(params) => <TextField sx={style} variant="standard" {...params} label="Tipos de representação" />}
+                            renderInput={(params) => <TextField sx={style} variant="standard" {...params} label="Tipo de representação" />}
+                            />
+                            <Dialog open={openRepresentation} onClose={handleRepresentationClose}>
+                                <Backdrop
+                                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                                    open={openBackDropDialog}
+                                >
+                                <CircularProgress color="inherit" />
+                                </Backdrop>
+                                <form onSubmit={handleRepresentationTypeSubmit}>
+                                    <DialogTitle>Adicionar um novo tipo de representação</DialogTitle>
+                                    <DialogContent>
+                                        <DialogContentText>
+                                            Sentiu falta de alguma representação ? por favor, adicione !
+                                        </DialogContentText>
+                                        <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        id="name"
+                                        value={dialogValue.type}
+                                        onChange={(event) =>
+                                            setDialogValue({
+                                            ...dialogValue,
+                                            type: event.target.value
+                                            })
+                                        }
+                                        label="Tipo de representação"
+                                        type="text"
+                                        variant="standard"
+                                        />
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleRepresentationClose}>Cancelar</Button>
+                                        <Button type="submit">Adicionar</Button>
+                                    </DialogActions>
+                                </form>
+                            </Dialog>   
+
+                            <Autocomplete
+                            sx={style}
+                            value={categoryValue}
+                            onChange={(event, newValue) => {
+                            if (typeof newValue === 'string') {
+                                // timeout to avoid instant validation of the dialog's form.
+                                setTimeout(() => {
+                                toggleCategoryOpen(true);
+                                setDialogValue({
+                                    type: newValue,
+                                });
+                                });
+                            } else if (newValue && newValue.inputValue) {
+                                toggleCategoryOpen(true);
+                                setDialogValue({
+                                type: newValue.inputValue,
+                                });
+                            } else {
+                                setCategoryValue(newValue);
+                            }
+                            }}
+                            filterOptions={(options, params) => {
+                            const filtered = filter(options, params);
+
+                            if (params.inputValue !== '') {
+                                filtered.push({
+                                inputValue: params.inputValue,
+                                type: `Add "${params.inputValue}"`,
+                                });
+                            }
+
+                            return filtered;
+                            }}
+                            id="free-solo-dialog-demo"
+                            options={categoryTypesFromBack}
+                            getOptionLabel={(option) => {
+                            // e.g value selected with enter, right from the input
+                            if (typeof option === 'string') {
+                                setCategoryType(option);
+                                return option;
+                            }
+                            if (option.inputValue) {
+                                setCategoryType(option.inputValue);
+                                return option.inputValue;
+                            }
+                            setCategoryType(option.type);
+                            return option.type;
+                            }}
+                            selectOnFocus
+                            clearOnBlur
+                            handleHomeEndKeys
+                            renderOption={(props, option) => <li  {...props}>{option.type}</li>}
+                            freeSolo
+                            renderInput={(params) => <TextField sx={style} variant="standard" {...params} label="Categoria" />}
                             />
 
                             <Autocomplete
@@ -350,28 +606,33 @@ const CreateCatalog = () => {
                                 )}
                             />
 
-                            <button type="submit">Criar</button>
+                            <button type="submit">Salvar</button>
 
                             <Dialog open={open} onClose={handleClose}>
-                                <form onSubmit={handleSubmit}>
-                                    <DialogTitle>Adicionar um novo tipo de representação</DialogTitle>
+                                <Backdrop
+                                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                                    open={openBackDropDialog}
+                                >
+                                <CircularProgress color="inherit" />
+                                </Backdrop>
+                                <form onSubmit={handleCategoryTypeSubmit}>
+                                    <DialogTitle>Adicionar um novo tipo de Categoria</DialogTitle>
                                     <DialogContent>
                                         <DialogContentText>
-                                            Sentiu falta de alguma representação ? por favor, adicione !
+                                            Sentiu falta de alguma Categoria ? por favor, adicione !
                                         </DialogContentText>
                                         <TextField
                                         autoFocus
                                         margin="dense"
                                         id="name"
-                                        value={dialogValue.title}
+                                        value={dialogValue.type}
                                         onChange={(event) =>
                                             setDialogValue({
                                             ...dialogValue,
-                                            title: event.target.value,
                                             type: event.target.value
                                             })
                                         }
-                                        label="Tipo de representação"
+                                        label="Tipo de Categoria"
                                         type="text"
                                         variant="standard"
                                         />
@@ -381,12 +642,23 @@ const CreateCatalog = () => {
                                         <Button type="submit">Adicionar</Button>
                                     </DialogActions>
                                 </form>
-                            </Dialog>                          
+                            </Dialog>   
                         </Form>
-                    </Box> 
+                    </Box>
                 </Box>
             </Box> 
-        </div>
+            <Box  paddingX={10} display='flex' flexDirection='column' gap={2} bgcolor="#7B1026" paddingTop={1} marginTop={2} >
+                <Box flexDirection='row' gap={2}>
+                </Box>
+                <Typography fontWeight='bold' fontFamily='Poppins' color={'#FFFF'} fontSize={30} align={"center"}>
+                    RequiHub
+                </Typography>
+                <Typography fontWeight='bold' fontFamily='Poppins' color={'#FFFF'} fontSize={10} align={"center"}>
+                    RequiHub (C) All rights Reserved
+                </Typography>
+                <GitHubIcon sx={{ color: '#FFFF', alignSelf: 'center', width: 20, height: 20, paddingY: 1 }} ></GitHubIcon>
+            </Box>
+        </Box>
     );
 }
 export default withAuth(CreateCatalog);

@@ -10,16 +10,18 @@ export const Container = styled.div`
 
 export const DragDropContainer = styled.div`
     text-align: center;
-    padding: 20px;
+    padding: 10px;
     border: 3px #7B1026 dashed;
-    width: 150px;
+    border-radius: 10px;
+    width: 400px;
     margin-top: 70px;
-    height: 60%;
+    margin-right: 80px;
+    height: 65%;
 `;
 
 export const Form = styled.form`
   width: 300px;
-  background: #eee;
+  background: #fff;
   margin: 30px;
   padding: 30px;
   display: flex;

@@ -108,9 +108,9 @@ export default function initial() {
                     RequiHub
                 </Typography>
                 <Typography fontWeight='bold' fontFamily='Poppins' color={'#FFFF'} fontSize={10} align={"center"}>
-                    StyleShit (C) All rights Reserved
+                    RequiHub (C) All rights Reserved
                 </Typography>
-                <GitHubIcon sx={{ color: '#FFFF', alignSelf: 'center', width: 40, height: 40, paddingY: 2 }} ></GitHubIcon>
+                <GitHubIcon sx={{ color: '#FFFF', alignSelf: 'center', width: 20, height: 20, paddingY: 2 }} ></GitHubIcon>
             </Box>
         </Container>
 

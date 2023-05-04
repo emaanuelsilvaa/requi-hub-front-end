@@ -5,12 +5,14 @@ import { useLocation } from "react-router-dom";
 import MenuBar from "../../components/MenuBar";
 import withAuth from "../../components/withAuth";
 import React,{useState, useEffect} from 'react';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import Modal from '@mui/material/Modal';
 
 
 export interface Catalog { 
     title: string;
     description: string;
-    attachmentModel: {};
+    attachmentModel: { fileType: string, fileSize: number};
     categoryType: { type: string; };
     representationTypeModel: {type: string;};
     subjectTags: [];
@@ -19,12 +21,21 @@ export interface Catalog {
 
 const style = {
     width: '300px',
-    background: '#eee',
+    background: '#fff',
     padding: '30px',
+    margin: 2,
+    borderRadius: 4,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'right'
 };
+
+const modalImageStyle = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+  };
 
 const ViewCatalog = () => {
     
@@ -33,21 +44,58 @@ const ViewCatalog = () => {
 
     const [catalog, setCatalog] = useState<Catalog>();
 
-    async function getAns(){
+    const [ selectedFile, setSelectedFile ] = useState<any>()
+
+    //MODAL
+    const [openImageModal, setOpenImageModal] = React.useState(false);
+    const handleCloseImageModal = () => setOpenImageModal(false);
+
+    const [fileIsPdf, setFileIsPdf] = React.useState(false);
+
+    async function getAnsCatalogFile(){
+        let file = await api.get("api/v1/file/download/"+state.id , {
+            responseType: "arraybuffer",});
+
+        return setSelectedFile(new Blob([file.data], {
+            type: file.headers['content-type']
+        }));
+
+
+    };
+    async function getAnsCatalogTextInfo(){
 
         let output = await api.get("/api/v1/catalog/find/id/"+state.id);
-
-        console.log(output.data + " GET RESULT");
-         
         return setCatalog(output.data);
      
     };
     useEffect(() => {
-        getAns();
+        getAnsCatalogTextInfo();
+        getAnsCatalogFile();
       }, [])
     
     return(
-        <div>
+        <Box
+        sx={{
+            bgcolor: '#eee',
+        }}
+        >
+
+            <Modal
+                open={openImageModal}
+                onClose={handleCloseImageModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                closeAfterTransition
+                style={{ overflow: 'scroll' }}
+            >
+                <Box  
+                    sx={modalImageStyle}
+                    component="img"
+                    src={selectedFile != null ? URL.createObjectURL(selectedFile) : ""}
+                >
+                </Box>
+                
+            </Modal>
             <MenuBar/>
             <Box
                 sx={{
@@ -55,10 +103,12 @@ const ViewCatalog = () => {
                     justifyContent: 'center',
                     flexDirection: 'column',
                     p: 1,
-                    m: 4,
+                    mt: 4,
+                    ml: 10,
+                    mr: 10,
                     height: 433,
                     borderRadius: 4,
-                    bgcolor: '#eee',
+                    bgcolor: '#fff',
                 }}   
             > 
 
@@ -68,67 +118,90 @@ const ViewCatalog = () => {
                     sx={{
                         display: 'flex',
                         justifyContent: 'left',
-                        bgcolor: '#eee',
+                        bgcolor: '#fff',
                         borderRadius: 4,
                         }}  
                 >
-
-
-                    <Box
-                        component="img"
-                        sx={{
-                        marginLeft: 5,   
-                        height: 533,
-                        width: 600,
-                        maxHeight: { xs: 433, md: 367 },
-                        maxWidth: { xs: 550, md: 450 },
-                        }}
-                        alt="The house from the offer."
-                        src="https://media.istockphoto.com/id/1175215972/vector/file-folder-in-flat-on-white-background.jpg?s=612x612&w=0&k=20&c=dALCaVx9KdXJkgPO6Bjim_3TLZA9rnN__9gZRdo1zQ8="
-                    />
+    
+                        <Box
+                            onClick={e=> (setOpenImageModal(true))}
+                            component="img"
+                            sx={{
+                            marginLeft: 5, 
+                            mb: 5,  
+                            bgcolor: '#eee',
+                            cursor: 'pointer',
+                            height: 400,
+                            width: 600,
+                            maxHeight: { xs: 433, md: 367 },
+                            maxWidth: { xs: 433, md: 367 },
+                            }}
+                            alt="The house from the offer."
+                            src={selectedFile != null ? URL.createObjectURL(selectedFile) : ""}
+                        />
                     
-                    <Box sx={style}>
+                        <Box
+                        sx={{
+                            bgcolor: '#fff',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            flexDirection: 'row',
+                            borderRadius: 4,
 
-                        <Typography fontFamily='Poppins' color={'#00000'}> Titulo </Typography>
-                        {catalog && (
-                            <Typography fontFamily='Poppins' color={'#7B1026'}> {catalog.title} </Typography>
-                        )}
+                        }}
+                        >
+                            <Box sx={style}>
 
-                        <Typography fontFamily='Poppins' color={'#00000'}> Descrição </Typography>
-                        {catalog && (
-                            <Typography fontFamily='Poppins' color={'#7B1026'}> {catalog.description} </Typography>
-                        )}
+                                <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Titulo </Typography>
+                                {catalog && (
+                                    <Typography fontFamily='Poppins' color={'#00000'} fontSize={15}> {catalog.title} </Typography>
+                                )}
 
-                        <Typography fontFamily='Poppins' color={'#00000'}> Categoria </Typography>
-                        {catalog && (
-                            <Typography fontFamily='Poppins' color={'#7B1026'}> {catalog.categoryType.type} </Typography>
-                        )}
+                                <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Descrição </Typography>
+                                {catalog && (
+                                    <Typography fontFamily='Poppins' color={'#00000'} fontSize={15}> {catalog.description} </Typography>
+                                )}
 
-                        <Typography fontFamily='Poppins' color={'#00000'}> Representações </Typography>
-                        {catalog && (
-                            <Typography fontFamily='Poppins' color={'#7B1026'}> {catalog.representationTypeModel.type} </Typography>
-                        )}
+                                <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Categoria </Typography>
+                                {catalog && (
+                                    <Typography fontFamily='Poppins' color={'#00000'} fontSize={15}> {catalog.categoryType.type} </Typography>
+                                )}
+
+                                <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Tipo de representação </Typography>
+                                {catalog && (
+                                    <Typography fontFamily='Poppins' color={'#00000'}fontSize={15}> {catalog.representationTypeModel.type} </Typography>
+                                )}
 
 
-                        <Typography fontFamily='Poppins' color={'#7B1026'}> Avaliações  </Typography>
-                        <Typography fontFamily='Poppins' color={'#7B1026'}> algum avaliação </Typography>
+                                {/* <Typography fontFamily='Poppins' color={'#7B1026'}> Avaliações  </Typography>
+                                <Typography fontFamily='Poppins' color={'#7B1026'}> algum avaliação </Typography> */}
 
-                    </Box>
-                    <Box
-                    >
-                        <Typography> Comentarios  </Typography>
-                    </Box>
+                            </Box>
+                            <Box sx={{m:5}}>
+                                {/* <Typography> Comentarios  </Typography> */}
+                            </Box>
+                            
+                        </Box>
                         
+                    </Box>   
                 </Box>
-                
-
-            </Box>
 
             <Box>
                 <Divider color="#7B1026" sx={{ m: 4, fontSize:20 }} orientation="horizontal" flexItem light> Recomentações</Divider>
 
             </Box>
-        </div>
+            <Box  paddingX={10} display='flex' flexDirection='column' gap={2} bgcolor="#7B1026" paddingTop={1} marginTop={2} >
+                <Box flexDirection='row' gap={2}>
+                </Box>
+                <Typography fontWeight='bold' fontFamily='Poppins' color={'#FFFF'} fontSize={30} align={"center"}>
+                    RequiHub
+                </Typography>
+                <Typography fontWeight='bold' fontFamily='Poppins' color={'#FFFF'} fontSize={10} align={"center"}>
+                    RequiHub (C) All rights Reserved
+                </Typography>
+                <GitHubIcon sx={{ color: '#FFFF', alignSelf: 'center', width: 20, height: 20, paddingY: 1 }} ></GitHubIcon>
+            </Box>
+        </Box>
     );
     
 }
