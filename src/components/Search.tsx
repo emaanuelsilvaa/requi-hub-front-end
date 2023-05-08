@@ -32,7 +32,7 @@ export default function SearchField(props: TextFieldProps): JSX.Element {
 
   const handleText = e => {
     if(searchText != ""){
-      navigate('/Criar' , { state: { searchText: searchText }});
+      navigate('/Repositorios' , { state: { searchText: searchText }});
     }
     e.preventDefault();
     console.log("teste");

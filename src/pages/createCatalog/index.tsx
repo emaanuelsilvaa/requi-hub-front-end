@@ -34,6 +34,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 /// PDF
 import {Document, Page, pdfjs } from 'react-pdf/dist/esm/entry.webpack'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import Grow from "@mui/material/Grow";
 
 
 const filter = createFilterOptions<OptionType>();
@@ -360,305 +361,310 @@ const CreateCatalog = () => {
                 </Alert>
             </Snackbar>
             <MenuBar/>
-            <Box
-            sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                flexDirection: 'column',
-                p: 1,
-                ml: 20,
-                mr: 20,
-                mt: 5,
-                mb: 5,
-                borderRadius: 4,
-                bgcolor: '#fff',
-            }}   
-            >
-                <Typography mt={2} mb={0} fontWeight="md" fontFamily='Poppins' color={'#7B1026'} fontSize={30} align={"center"}> Criar Catalogo</Typography>
+            <Grow in={true} timeout={600}>
                 <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        flexDirection: 'row',
-                        bgcolor: '#fff',
-                        borderRadius: 4,
-                        }}  
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    p: 1,
+                    ml: 10,
+                    mr: 10,
+                    mt: 5,
+                    mb: 5,
+                    borderRadius: 4,
+                    bgcolor: '#fff',
+                    maxWidth: 2000
+                }}   
                 >
-                    <div>
-                        <DragDropContainer>
-                            {hasSelectedFile ?
-                                notIsPdfFile ? 
-                                    <Box>
-                                        <Box sx={{cursor: 'pointer',}}onClick={e=> (setOpenImageModal(true))}>
-                                            <Avatar variant={"rounded"} alt="The image" src={URL.createObjectURL(selectedFile)} style={{
-                                                width: 400,
-                                                height: 250,}}>
-                                            </Avatar>
+                    <Typography mt={2} mb={0} fontWeight="md" fontFamily='Poppins' color={'#7B1026'} fontSize={30} align={"center"}> Criar Catalogo</Typography>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            flexDirection: 'row',
+                            bgcolor: '#fff',
+                            borderRadius: 4,
+                            }}  
+                    >
+                        <div>
+                            <DragDropContainer>
+                                {hasSelectedFile ?
+                                    notIsPdfFile ? 
+                                        <Box>
+                                            <Box sx={{cursor: 'pointer',}}onClick={e=> (setOpenImageModal(true))}>
+                                                <Avatar variant={"rounded"} alt="The image" src={URL.createObjectURL(selectedFile)} style={{
+                                                    width: 400,
+                                                    height: 250,}}>
+                                                </Avatar>
+                                            </Box>
+                                            <IconButton aria-label="delete" size="small" onClick={removeSelectedFile}>
+                                                <DeleteIcon fontSize="small" />
+                                            </IconButton> 
+                                        </Box>      
+                                    :
+                                        <Box>
+                                        <Box sx={{cursor: 'pointer', minHeight: 250, minWidth:350, display: 'flex',
+                        justifyContent: 'center'}} onClick={e=> (setOpenImageModal(true))}>
+                                            <Document file={URL.createObjectURL(selectedFile)} onLoadSuccess={onDocumentLoadSuccess} >
+                                            <Page  renderTextLayer={false}  renderAnnotationLayer={true} pageNumber={pagePdfNumber} 
+                                            height={250}
+                                            >
+                                            </Page>
+                                            </Document>
                                         </Box>
                                         <IconButton aria-label="delete" size="small" onClick={removeSelectedFile}>
                                             <DeleteIcon fontSize="small" />
                                         </IconButton> 
-                                    </Box>      
+                                        </Box>
                                 :
-                                    <Box>
-                                    <Box sx={{cursor: 'pointer',}} onClick={e=> (setOpenImageModal(true))}>
-                                        <Document file={URL.createObjectURL(selectedFile)} onLoadSuccess={onDocumentLoadSuccess} >
-                                        <Page  renderTextLayer={false}  renderAnnotationLayer={true} pageNumber={pagePdfNumber} 
-                                        height={250}
-                                        >
-                                        </Page>
-                                        </Document>
-                                    </Box>
-                                    <IconButton aria-label="delete" size="small" onClick={removeSelectedFile}>
-                                        <DeleteIcon fontSize="small" />
-                                    </IconButton> 
-                                    </Box>
-                             :
-                             <label style={{ cursor: 'pointer' }}>
-                                <DriveFolderUploadIcon className="upload-btn" sx={{cursor: 'pointer', color: '#7B1026', alignSelf: 'center', width: 60, height: 40, paddingY: 10 }} >
+                                <label style={{ cursor: 'pointer' }}>
+                                    <DriveFolderUploadIcon className="upload-btn" sx={{cursor: 'pointer', color: '#7B1026', alignSelf: 'center', width: 60, height: 40, paddingY: 10 }} >
+                                    
+                                    </DriveFolderUploadIcon>
+                                    <Typography mb={0} fontFamily='Poppins' color={'#7B1026'} fontSize={20} align={"center"}> Clique para carregar um arquivo</Typography>
+                                    <Typography mb={0} fontFamily='Poppins' color={'#7B1026'} fontSize={13} align={"center"}> Arquivos suportados: PDF, JPEG, PNG</Typography>
+                                    <input type="file" name="myfile" style={{display: 'none', cursor: 'pointer' }} onChange={changeHandler}></input>
+                                </label>
+                                }    
+                            </DragDropContainer>
+                        </div>
+                        
+                        <Box sx={{bgcolor: '#fff'}}>
+                            <Form onSubmit={handleSignIn}>
+                                {error && <p>{error}</p>}
+                                <TextField sx={style} id="standard-text" label="Titulo" variant="standard"  onChange={e => setTitle(e.target.value) } />
+                                <TextField sx={style} id="standard-description" label="Descrição" variant="standard"  onChange={e => setDescription(e.target.value) } />
                                 
-                                </DriveFolderUploadIcon>
-                                <Typography mb={0} fontFamily='Poppins' color={'#7B1026'} fontSize={20} align={"center"}> Clique para carregar um arquivo</Typography>
-                                <Typography mb={0} fontFamily='Poppins' color={'#7B1026'} fontSize={13} align={"center"}> Arquivos suportados: PDF, JPEG, PNG</Typography>
-                                <input type="file" name="myfile" style={{display: 'none', cursor: 'pointer' }} onChange={changeHandler}></input>
-                            </label>
-                            }    
-                        </DragDropContainer>
-                    </div>
-                    
-                    <Box sx={{bgcolor: '#fff'}}>
-                        <Form onSubmit={handleSignIn}>
-                            {error && <p>{error}</p>}
-                            <TextField sx={style} id="standard-text" label="Titulo" variant="standard"  onChange={e => setTitle(e.target.value) } />
-                            <TextField sx={style} id="standard-description" label="Descrição" variant="standard"  onChange={e => setDescription(e.target.value) } />
-                            
-                            <Autocomplete
-                            sx={style}
-                            value={representationValue}
-                            onChange={(event, newValue) => {
-                            if (typeof newValue === 'string') {
-                                // timeout to avoid instant validation of the dialog's form.
-                                setTimeout(() => {
-                                toggleRepresentationyOpen(true);
-                                setDialogValue({
-                                    type: newValue,
-                                });
-                                });
-                            } else if (newValue && newValue.inputValue) {
-                                toggleRepresentationyOpen(true);
-                                setDialogValue({
-                                type: newValue.inputValue,
-                                });
-                            } else {
-                                setRepresentationValue(newValue);
-                            }
-                            }}
-                            filterOptions={(options, params) => {
-                            const filtered = filter(options, params);
-
-                            if (params.inputValue !== '') {
-                                filtered.push({
-                                inputValue: params.inputValue,
-                                type: `Add "${params.inputValue}"`,
-                                });
-                            }
-
-                            return filtered;
-                            }}
-                            id="free-solo-dialog-demo"
-                            options={representationTypes}
-                            getOptionLabel={(option) => {
-                            // e.g value selected with enter, right from the input
-                            if (typeof option === 'string') {
-                                setRepresentationType(option);
-                                return option;
-                            }
-                            if (option.inputValue) {
-                                setRepresentationType(option.inputValue);
-                                return option.inputValue;
-                            }
-                            setRepresentationType(option.type);
-                            return option.type;
-                            }}
-                            selectOnFocus
-                            clearOnBlur
-                            handleHomeEndKeys
-                            renderOption={(props, option) => <li  {...props}>{option.type}</li>}
-                            freeSolo
-                            renderInput={(params) => <TextField sx={style} variant="standard" {...params} label="Tipo de representação" />}
-                            />
-                            <Dialog open={openRepresentation} onClose={handleRepresentationClose}>
-                                <Backdrop
-                                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                                    open={openBackDropDialog}
-                                >
-                                <CircularProgress color="inherit" />
-                                </Backdrop>
-                                <form onSubmit={handleRepresentationTypeSubmit}>
-                                    <DialogTitle>Adicionar um novo tipo de representação</DialogTitle>
-                                    <DialogContent>
-                                        <DialogContentText>
-                                            Sentiu falta de alguma representação ? por favor, adicione !
-                                        </DialogContentText>
-                                        <TextField
-                                        autoFocus
-                                        margin="dense"
-                                        id="name"
-                                        value={dialogValue.type}
-                                        onChange={(event) =>
-                                            setDialogValue({
-                                            ...dialogValue,
-                                            type: event.target.value
-                                            })
-                                        }
-                                        label="Tipo de representação"
-                                        type="text"
-                                        variant="standard"
-                                        />
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={handleRepresentationClose}>Cancelar</Button>
-                                        <Button type="submit">Adicionar</Button>
-                                    </DialogActions>
-                                </form>
-                            </Dialog>   
-
-                            <Autocomplete
-                            sx={style}
-                            value={categoryValue}
-                            onChange={(event, newValue) => {
-                            if (typeof newValue === 'string') {
-                                // timeout to avoid instant validation of the dialog's form.
-                                setTimeout(() => {
-                                toggleCategoryOpen(true);
-                                setDialogValue({
-                                    type: newValue,
-                                });
-                                });
-                            } else if (newValue && newValue.inputValue) {
-                                toggleCategoryOpen(true);
-                                setDialogValue({
-                                type: newValue.inputValue,
-                                });
-                            } else {
-                                setCategoryValue(newValue);
-                            }
-                            }}
-                            filterOptions={(options, params) => {
-                            const filtered = filter(options, params);
-
-                            if (params.inputValue !== '') {
-                                filtered.push({
-                                inputValue: params.inputValue,
-                                type: `Add "${params.inputValue}"`,
-                                });
-                            }
-
-                            return filtered;
-                            }}
-                            id="free-solo-dialog-demo"
-                            options={categoryTypesFromBack}
-                            getOptionLabel={(option) => {
-                            // e.g value selected with enter, right from the input
-                            if (typeof option === 'string') {
-                                setCategoryType(option);
-                                return option;
-                            }
-                            if (option.inputValue) {
-                                setCategoryType(option.inputValue);
-                                return option.inputValue;
-                            }
-                            setCategoryType(option.type);
-                            return option.type;
-                            }}
-                            selectOnFocus
-                            clearOnBlur
-                            handleHomeEndKeys
-                            renderOption={(props, option) => <li  {...props}>{option.type}</li>}
-                            freeSolo
-                            renderInput={(params) => <TextField sx={style} variant="standard" {...params} label="Categoria" />}
-                            />
-
-                            <Autocomplete
+                                <Autocomplete
                                 sx={style}
-                                multiple
-                                id="tags-filled"
-                                options={subjectTags}
-                                onChange={(event, value) => setSubjectTags(value)}
-                                freeSolo
-                                renderTags={(value, getTagProps) =>
-                                value.map((option, index) => (
-                                    <Chip
-                                    variant="outlined"
-                                    label={option}
-                                    {...getTagProps({ index })}
-                                    />
-                                ))
+                                value={representationValue}
+                                onChange={(event, newValue) => {
+                                if (typeof newValue === 'string') {
+                                    // timeout to avoid instant validation of the dialog's form.
+                                    setTimeout(() => {
+                                    toggleRepresentationyOpen(true);
+                                    setDialogValue({
+                                        type: newValue,
+                                    });
+                                    });
+                                } else if (newValue && newValue.inputValue) {
+                                    toggleRepresentationyOpen(true);
+                                    setDialogValue({
+                                    type: newValue.inputValue,
+                                    });
+                                } else {
+                                    setRepresentationValue(newValue);
                                 }
-                                renderInput={(params) => (
-                                <TextField
-                                    sx={style}
-                                    {...params}
-                                    variant="standard"
-                                    label="Tags"
-                                    placeholder="Adicione uma tag"
+                                }}
+                                filterOptions={(options, params) => {
+                                const filtered = filter(options, params);
+
+                                if (params.inputValue !== '') {
+                                    filtered.push({
+                                    inputValue: params.inputValue,
+                                    type: `Add "${params.inputValue}"`,
+                                    });
+                                }
+
+                                return filtered;
+                                }}
+                                id="free-solo-dialog-demo"
+                                options={representationTypes}
+                                getOptionLabel={(option) => {
+                                // e.g value selected with enter, right from the input
+                                if (typeof option === 'string') {
+                                    setRepresentationType(option);
+                                    return option;
+                                }
+                                if (option.inputValue) {
+                                    setRepresentationType(option.inputValue);
+                                    return option.inputValue;
+                                }
+                                setRepresentationType(option.type);
+                                return option.type;
+                                }}
+                                selectOnFocus
+                                clearOnBlur
+                                handleHomeEndKeys
+                                renderOption={(props, option) => <li  {...props}>{option.type}</li>}
+                                freeSolo
+                                renderInput={(params) => <TextField sx={style} variant="standard" {...params} label="Tipo de representação" />}
                                 />
-                                )}
-                            />
+                                <Dialog open={openRepresentation} onClose={handleRepresentationClose}>
+                                    <Backdrop
+                                        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                                        open={openBackDropDialog}
+                                    >
+                                    <CircularProgress color="inherit" />
+                                    </Backdrop>
+                                    <form onSubmit={handleRepresentationTypeSubmit}>
+                                        <DialogTitle>Adicionar um novo tipo de representação</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText>
+                                                Sentiu falta de alguma representação ? por favor, adicione !
+                                            </DialogContentText>
+                                            <TextField
+                                            autoFocus
+                                            margin="dense"
+                                            id="name"
+                                            value={dialogValue.type}
+                                            onChange={(event) =>
+                                                setDialogValue({
+                                                ...dialogValue,
+                                                type: event.target.value
+                                                })
+                                            }
+                                            label="Tipo de representação"
+                                            type="text"
+                                            variant="standard"
+                                            />
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleRepresentationClose}>Cancelar</Button>
+                                            <Button type="submit">Adicionar</Button>
+                                        </DialogActions>
+                                    </form>
+                                </Dialog>   
 
-                            <button type="submit">Salvar</button>
+                                <Autocomplete
+                                sx={style}
+                                value={categoryValue}
+                                onChange={(event, newValue) => {
+                                if (typeof newValue === 'string') {
+                                    // timeout to avoid instant validation of the dialog's form.
+                                    setTimeout(() => {
+                                    toggleCategoryOpen(true);
+                                    setDialogValue({
+                                        type: newValue,
+                                    });
+                                    });
+                                } else if (newValue && newValue.inputValue) {
+                                    toggleCategoryOpen(true);
+                                    setDialogValue({
+                                    type: newValue.inputValue,
+                                    });
+                                } else {
+                                    setCategoryValue(newValue);
+                                }
+                                }}
+                                filterOptions={(options, params) => {
+                                const filtered = filter(options, params);
 
-                            <Dialog open={open} onClose={handleClose}>
-                                <Backdrop
-                                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                                    open={openBackDropDialog}
-                                >
-                                <CircularProgress color="inherit" />
-                                </Backdrop>
-                                <form onSubmit={handleCategoryTypeSubmit}>
-                                    <DialogTitle>Adicionar um novo tipo de Categoria</DialogTitle>
-                                    <DialogContent>
-                                        <DialogContentText>
-                                            Sentiu falta de alguma Categoria ? por favor, adicione !
-                                        </DialogContentText>
-                                        <TextField
-                                        autoFocus
-                                        margin="dense"
-                                        id="name"
-                                        value={dialogValue.type}
-                                        onChange={(event) =>
-                                            setDialogValue({
-                                            ...dialogValue,
-                                            type: event.target.value
-                                            })
-                                        }
-                                        label="Tipo de Categoria"
-                                        type="text"
-                                        variant="standard"
+                                if (params.inputValue !== '') {
+                                    filtered.push({
+                                    inputValue: params.inputValue,
+                                    type: `Add "${params.inputValue}"`,
+                                    });
+                                }
+
+                                return filtered;
+                                }}
+                                id="free-solo-dialog-demo"
+                                options={categoryTypesFromBack}
+                                getOptionLabel={(option) => {
+                                // e.g value selected with enter, right from the input
+                                if (typeof option === 'string') {
+                                    setCategoryType(option);
+                                    return option;
+                                }
+                                if (option.inputValue) {
+                                    setCategoryType(option.inputValue);
+                                    return option.inputValue;
+                                }
+                                setCategoryType(option.type);
+                                return option.type;
+                                }}
+                                selectOnFocus
+                                clearOnBlur
+                                handleHomeEndKeys
+                                renderOption={(props, option) => <li  {...props}>{option.type}</li>}
+                                freeSolo
+                                renderInput={(params) => <TextField sx={style} variant="standard" {...params} label="Categoria" />}
+                                />
+
+                                <Autocomplete
+                                    sx={style}
+                                    multiple
+                                    id="tags-filled"
+                                    options={subjectTags}
+                                    onChange={(event, value) => setSubjectTags(value)}
+                                    freeSolo
+                                    renderTags={(value, getTagProps) =>
+                                    value.map((option, index) => (
+                                        <Chip
+                                        variant="outlined"
+                                        label={option}
+                                        {...getTagProps({ index })}
                                         />
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={handleClose}>Cancelar</Button>
-                                        <Button type="submit">Adicionar</Button>
-                                    </DialogActions>
-                                </form>
-                            </Dialog>   
-                        </Form>
+                                    ))
+                                    }
+                                    renderInput={(params) => (
+                                    <TextField
+                                        sx={style}
+                                        {...params}
+                                        variant="standard"
+                                        label="Tags"
+                                        placeholder="Adicione uma tag"
+                                    />
+                                    )}
+                                />
+
+                                <button style={{cursor: 'pointer'}} type="submit">Salvar</button>
+
+                                <Dialog open={open} onClose={handleClose}>
+                                    <Backdrop
+                                        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                                        open={openBackDropDialog}
+                                    >
+                                    <CircularProgress color="inherit" />
+                                    </Backdrop>
+                                    <form onSubmit={handleCategoryTypeSubmit}>
+                                        <DialogTitle>Adicionar um novo tipo de Categoria</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText>
+                                                Sentiu falta de alguma Categoria ? por favor, adicione !
+                                            </DialogContentText>
+                                            <TextField
+                                            autoFocus
+                                            margin="dense"
+                                            id="name"
+                                            value={dialogValue.type}
+                                            onChange={(event) =>
+                                                setDialogValue({
+                                                ...dialogValue,
+                                                type: event.target.value
+                                                })
+                                            }
+                                            label="Tipo de Categoria"
+                                            type="text"
+                                            variant="standard"
+                                            />
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleClose}>Cancelar</Button>
+                                            <Button type="submit">Adicionar</Button>
+                                        </DialogActions>
+                                    </form>
+                                </Dialog>   
+                            </Form>
+                        </Box>
                     </Box>
                 </Box>
-            </Box> 
-            <Box  paddingX={10} display='flex' flexDirection='column' gap={2} bgcolor="#7B1026" paddingTop={1} marginTop={2} >
-                <Box flexDirection='row' gap={2}>
+                </Grow>
+                <Box  paddingX={10} display='flex' flexDirection='column' gap={2} bgcolor="#7B1026" paddingTop={1} marginTop={2} >
+                    <Box flexDirection='row' gap={2}>
+                    </Box>
+                    <Typography fontWeight='bold' fontFamily='Poppins' color={'#FFFF'} fontSize={30} align={"center"}>
+                        RequiHub
+                    </Typography>
+                    <Typography fontWeight='bold' fontFamily='Poppins' color={'#FFFF'} fontSize={10} align={"center"}>
+                        RequiHub (C) All rights Reserved
+                    </Typography>
+                    <GitHubIcon sx={{ color: '#FFFF', alignSelf: 'center', width: 20, height: 20, paddingY: 1 }} ></GitHubIcon>
                 </Box>
-                <Typography fontWeight='bold' fontFamily='Poppins' color={'#FFFF'} fontSize={30} align={"center"}>
-                    RequiHub
-                </Typography>
-                <Typography fontWeight='bold' fontFamily='Poppins' color={'#FFFF'} fontSize={10} align={"center"}>
-                    RequiHub (C) All rights Reserved
-                </Typography>
-                <GitHubIcon sx={{ color: '#FFFF', alignSelf: 'center', width: 20, height: 20, paddingY: 1 }} ></GitHubIcon>
-            </Box>
-        </Box>
+            
+                </Box>
     );
 }
 export default withAuth(CreateCatalog);

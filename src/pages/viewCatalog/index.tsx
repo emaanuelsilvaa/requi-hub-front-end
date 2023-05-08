@@ -7,6 +7,11 @@ import withAuth from "../../components/withAuth";
 import React,{useState, useEffect} from 'react';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import Modal from '@mui/material/Modal';
+import {Document, Page, pdfjs } from 'react-pdf/dist/esm/entry.webpack'
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import Button from "@mui/material/Button";
+import DownloadIcon from '@mui/icons-material/Download';
+import Grow from "@mui/material/Grow";
 
 
 export interface Catalog { 
@@ -38,6 +43,9 @@ const modalImageStyle = {
   };
 
 const ViewCatalog = () => {
+
+    pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
+
     
     const { state } = useLocation();
     console.log(state.id);
@@ -51,6 +59,16 @@ const ViewCatalog = () => {
     const handleCloseImageModal = () => setOpenImageModal(false);
 
     const [fileIsPdf, setFileIsPdf] = React.useState(false);
+
+     //PDF
+     const [numPdfPages, setNumPdfPages] = React.useState(null);
+     const [pagePdfNumber, setPdfPageNumber] = React.useState(1);
+     //
+
+     const onDocumentLoadSuccess = ({ numPages }) => {
+		setNumPdfPages(numPages);
+        setPdfPageNumber(1);
+	};
 
     async function getAnsCatalogFile(){
         let file = await api.get("api/v1/file/download/"+state.id , {
@@ -72,6 +90,9 @@ const ViewCatalog = () => {
         getAnsCatalogTextInfo();
         getAnsCatalogFile();
       }, [])
+
+
+
     
     return(
         <Box
@@ -88,12 +109,30 @@ const ViewCatalog = () => {
                 closeAfterTransition
                 style={{ overflow: 'scroll' }}
             >
-                <Box  
+                {selectedFile != null && selectedFile.type == "application/pdf" ?
+                    <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    minHeight="100vh"
+                    >   
+                        <Document file={selectedFile != null ? URL.createObjectURL(selectedFile) : ""} onLoadSuccess={onDocumentLoadSuccess} >
+                        <Button sx={{marginRight: 10, color: '#FFF'}} onClick={e => setOpenImageModal(false)}>Fechar</Button>
+                            {Array.from(
+                                new Array(numPdfPages),
+                                (el,index) => 
+                                <Page  renderTextLayer={false}  renderAnnotationLayer={true} size="A4" key={`page_${index+1}`} pageNumber={index+1}/>
+                            )}
+                        </Document>
+                    </Box>
+                :
+                    <Box  
                     sx={modalImageStyle}
                     component="img"
                     src={selectedFile != null ? URL.createObjectURL(selectedFile) : ""}
-                >
-                </Box>
+                    >
+                    </Box>
+                }
                 
             </Modal>
             <MenuBar/>
@@ -103,17 +142,21 @@ const ViewCatalog = () => {
                     justifyContent: 'center',
                     flexDirection: 'column',
                     p: 1,
-                    mt: 4,
+                    mt: 5,
+                    mb: 5,
                     ml: 10,
                     mr: 10,
-                    height: 433,
                     borderRadius: 4,
                     bgcolor: '#fff',
                 }}   
             > 
-
-                <Typography mt={0} mb={0} fontFamily='Poppins' color={'#7B1026'} fontSize={30} align={"center"}>Catalogo</Typography>   
-
+                <Box sx={{display: 'flex',
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                    mt:2,}}>
+                    <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={30} align={"center"}>Catalogo</Typography>   
+                </Box>
+                
                 <Box
                     sx={{
                         display: 'flex',
@@ -122,69 +165,96 @@ const ViewCatalog = () => {
                         borderRadius: 4,
                         }}  
                 >
-    
-                        <Box
-                            onClick={e=> (setOpenImageModal(true))}
-                            component="img"
-                            sx={{
-                            marginLeft: 5, 
-                            mb: 5,  
-                            bgcolor: '#eee',
-                            cursor: 'pointer',
-                            height: 400,
-                            width: 600,
-                            maxHeight: { xs: 433, md: 367 },
-                            maxWidth: { xs: 433, md: 367 },
-                            }}
-                            alt="The house from the offer."
-                            src={selectedFile != null ? URL.createObjectURL(selectedFile) : ""}
-                        />
                     
+                    {selectedFile != null && selectedFile.type == "application/pdf" ?
+                        <Box sx={{cursor: 'pointer', minHeight: 433, minWidth:433, display: 'flex',
+                    justifyContent: 'center'}} onClick={e=> (setOpenImageModal(true))}>
+                            <Document file={URL.createObjectURL(selectedFile)} onLoadSuccess={onDocumentLoadSuccess} >
+                                <Page  renderTextLayer={false}  renderAnnotationLayer={true} pageNumber={pagePdfNumber} 
+                                height={433}
+                                >
+                                </Page>
+                            </Document>
+                        </Box>
+                    :
                         <Box
+                        onClick={e=> (setOpenImageModal(true))}
+                        component="img"
                         sx={{
-                            bgcolor: '#fff',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            flexDirection: 'row',
-                            borderRadius: 4,
-
+                        marginLeft: 5, 
+                        mb: 5,  
+                        bgcolor: '#eee',
+                        cursor: 'pointer',
+                        height: 400,
+                        width: 600,
+                        maxHeight: { xs: 433, md: 367 },
+                        maxWidth: { xs: 433, md: 367 },
                         }}
-                        >
-                            <Box sx={style}>
+                        alt="Catalog File."
+                        src={selectedFile != null ? URL.createObjectURL(selectedFile) : ""}
+                        />
+                    }
+                    
+                    <Box
+                    sx={{
+                        bgcolor: '#fff',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        flexDirection: 'row',
+                        borderRadius: 4,
 
-                                <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Titulo </Typography>
-                                {catalog && (
-                                    <Typography fontFamily='Poppins' color={'#00000'} fontSize={15}> {catalog.title} </Typography>
-                                )}
+                    }}
+                    >
+                        <Box sx={style}>
 
-                                <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Descrição </Typography>
-                                {catalog && (
-                                    <Typography fontFamily='Poppins' color={'#00000'} fontSize={15}> {catalog.description} </Typography>
-                                )}
+                            <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Titulo </Typography>
+                            {catalog && (
+                                <Typography fontFamily='Poppins' color={'#00000'} fontSize={15}> {catalog.title} </Typography>
+                            )}
 
-                                <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Categoria </Typography>
-                                {catalog && (
-                                    <Typography fontFamily='Poppins' color={'#00000'} fontSize={15}> {catalog.categoryType.type} </Typography>
-                                )}
+                            <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Descrição </Typography>
+                            {catalog && (
+                                <Typography fontFamily='Poppins' color={'#00000'} fontSize={15}> {catalog.description} </Typography>
+                            )}
 
-                                <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Tipo de representação </Typography>
-                                {catalog && (
-                                    <Typography fontFamily='Poppins' color={'#00000'}fontSize={15}> {catalog.representationTypeModel.type} </Typography>
-                                )}
+                            <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Categoria </Typography>
+                            {catalog && (
+                                <Typography fontFamily='Poppins' color={'#00000'} fontSize={15}> {catalog.categoryType.type} </Typography>
+                            )}
 
+                            <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Tipo de representação </Typography>
+                            {catalog && (
+                                <Typography fontFamily='Poppins' color={'#00000'}fontSize={15}> {catalog.representationTypeModel.type} </Typography>
+                            )}
 
-                                {/* <Typography fontFamily='Poppins' color={'#7B1026'}> Avaliações  </Typography>
-                                <Typography fontFamily='Poppins' color={'#7B1026'}> algum avaliação </Typography> */}
+                <Box 
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'left',
+                    flexDirection: 'row',
+                    mt:2,
+                    cursor: 'pointer',
+                    }}
+                >
+                    <a href={selectedFile != null ? URL.createObjectURL(selectedFile) : ""} style={{textDecoration: 'none', cursor: 'pointer', display: 'flex',
+                    justifyContent: 'left',
+                    flexDirection: 'row', }} target="_blank" rel="noopener noreferrer" download>
+                    <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={15} align={"left"}>Baixar</Typography>   
+                    <DownloadIcon sx={{ color: '#7B1026', alignSelf: 'right', width: 25, height: 25 }}></DownloadIcon>
+                    </a>
+                </Box>
 
-                            </Box>
-                            <Box sx={{m:5}}>
-                                {/* <Typography> Comentarios  </Typography> */}
-                            </Box>
-                            
+                            {/* <Typography fontFamily='Poppins' color={'#7B1026'}> Avaliações  </Typography>
+                            <Typography fontFamily='Poppins' color={'#7B1026'}> algum avaliação </Typography> */}
+
+                        </Box>
+                        <Box sx={{m:5}}>
+                            {/* <Typography> Comentarios  </Typography> */}
                         </Box>
                         
-                    </Box>   
-                </Box>
+                    </Box>
+                </Box>   
+            </Box>
 
             <Box>
                 <Divider color="#7B1026" sx={{ m: 4, fontSize:20 }} orientation="horizontal" flexItem light> Recomentações</Divider>

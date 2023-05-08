@@ -8,6 +8,7 @@ import Initial from "./pages/Initial/initial"
 import CreateCatalog from "./pages/createCatalog";
 import EditProfile from "./pages/Profile/EditProfile";
 import ViewCatalog from "./pages/viewCatalog";
+import Repository from "./pages/repository";
 
 interface Props {
   component?: any,
@@ -29,6 +30,7 @@ const AppRoutes = () => (
       <Route path="/profile/edit" element={<EditProfile/>} />
       <Route path="/Criar" element={<CreateCatalog/>} />
       <Route path="/Catalogo" element={<ViewCatalog/>} />
+      <Route path="/Repositorios" element={<Repository/>} />
       
           
     </Routes>
