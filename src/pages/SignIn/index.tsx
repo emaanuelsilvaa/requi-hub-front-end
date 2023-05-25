@@ -71,7 +71,7 @@ const SignIn = () => {
       try {
         setOpen(!open);
         const response = await api.post("/api/v1/auth/authenticate", { email, password });
-        login(response.data.token);
+        login(response.data);
         console.log(response.headers);
         setOpen(false);
         handleClick();

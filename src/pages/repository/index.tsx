@@ -20,6 +20,22 @@ import TablePagination from '@mui/material/TablePagination';
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
+import FilterListIcon from '@mui/icons-material/FilterList';
+
+
+import ListSubheader from '@mui/material/ListSubheader';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Collapse from '@mui/material/Collapse';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import DraftsIcon from '@mui/icons-material/Drafts';
+import SendIcon from '@mui/icons-material/Send';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import StarBorder from '@mui/icons-material/StarBorder';
+
 
 
 
@@ -115,6 +131,12 @@ const Repository = () => {
 
     const [openBackDropCatalogList, setOpenBackDropCatalogList] = React.useState(false);
 
+    const [openSubMenu, setOpenSubMenu] = React.useState(true);
+
+    const handleClick = () => {
+        setOpenSubMenu(!openSubMenu);
+    };
+
 
 
     const handleChangePage = async (
@@ -135,35 +157,80 @@ const Repository = () => {
     setPage(0);
     };
 
+
+    const handleRepositoryList = async e => {
+
+        e.preventDefault();
+
+        //const response = await api.post("/api/v1/auth/authenticate", { email, password });
+    }
+
     return(
         <Box sx={{}}>
             <MenuBar/>
             <Box
-            display="flex"
-            justifyContent="left"
+            justifyContent="center"
             alignItems="left"
             sx={{
-                maxWidth: 1500,
-                background: '#eee',
-                margin:5,
-                borderRadius: 4,
+                display: { xs: 'none', md: 'flex' },
+               
+                background: '#FFF',
+                margin:10,
+                borderRadius: 2,
                 
             }}
             >
                 
                 <Box 
                 sx={{
-                    maxWidth:200, 
+                    maxWidth:180,
+                    minWidth: 180,
                     minHeight:500, 
-                    margin:5,
-                    padding:10, 
-                    background: '#7B1026'
+                    mr: 2,
+                    padding:2, 
+                    background: '#7B1026',
+                    borderTopLeftRadius: 8,
+                    borderBottomLeftRadius: 8
                 }}>
-                    <p style={{background: '#eee', maxWidth:"xl"}}>Filtros</p>
+                    <List
+                    sx={{ width: '100%', maxWidth: 200, bgcolor: '#7B1026' }}
+                    component="nav"
+                    aria-labelledby="nested-list-subheader"
+                    subheader={
+                        <ListSubheader component="div" id="nested-list-subheader" sx={{ mb: 3,bgcolor: '#7B1026', color:'#fff', alignItems:'center', fontSize: 22}}>
+                            <FilterListIcon sx={{pr: 2, pl: 2, pt: 2, width: 25, height: 25}}></FilterListIcon>
+                            Filtros
+                        </ListSubheader>
+                    }
+                    >
+                    <ListItemButton sx={{color:'#fff'}}>
+                        <ListItemText primary="TÍTULO" color='#ffff' primaryTypographyProps={{fontSize: '13px'}}  />
+                    </ListItemButton>
+                    <ListItemButton sx={{color:'#fff'}}>
+                        <ListItemText primary="TIPO DE REPRESENTAÇÃO" color='#ffff' primaryTypographyProps={{fontSize: '13px'}}  />
+                    </ListItemButton>
+                    <ListItemButton sx={{color:'#fff'}}>
+                        <ListItemText primary="CATEGORIA" primaryTypographyProps={{fontSize: '13px'}} />
+                    </ListItemButton>
+                    <ListItemButton onClick={handleClick} sx={{color:'#fff'}}>
+                        <ListItemText primary="TAGS" primaryTypographyProps={{fontSize: '13px'}} />
+                        {openSubMenu ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={openSubMenu} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
+                        <ListItemButton sx={{ pl: 4, color:'#fff' }}>
+                            <ListItemText primary="Starred"  />
+                        </ListItemButton>
+                        <ListItemButton sx={{ pl: 4, color:'#fff' }}>
+                            <ListItemText primary="Starred"  />
+                        </ListItemButton>
+                        </List>
+                    </Collapse>
+                </List>
                 </Box>
 
                 <Box sx={{ flexGrow: 1, mt: 2 }}>   
-                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                <Grid container spacing={{ xs: 1, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                     <Backdrop
                         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                         open={openBackDropCatalogList}
@@ -172,7 +239,7 @@ const Repository = () => {
                     </Backdrop>
                     {itemData.map((item) => (
                     <Grow in={true} timeout={600}>
-                        <Grid item xs={2} sm={4} md={4} key={item.title}>
+                        <Grid item xs={2} sm={3} md={3} key={item.title}>
                             <Card sx={{ maxWidth: 300 }}>
                                 <CardActionArea>
                                     <CardMedia
@@ -198,13 +265,21 @@ const Repository = () => {
                                     >
                                         {item.description}
                                     </Typography>
+                                    <Typography sx={{
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        display: "-webkit-box",
+                                        WebkitLineClamp: "3",
+                                        WebkitBoxOrient: "vertical",
+                                    }} 
+                                    fontFamily='Poppins' 
+                                    variant="body2" 
+                                    color="text.secondary"
+                                    >
+                                        Tipo de representação:
+                                    </Typography>
                                     </CardContent>
                                 </CardActionArea>
-                                <CardActions>
-                                    <Button size="small" sx={{ color: '#000'}}>
-                                    Abrir
-                                    </Button>
-                                </CardActions>
                             </Card>
                         </Grid>
                     </Grow>
@@ -213,16 +288,17 @@ const Repository = () => {
                 <TablePagination
                     sx={{
                         '.MuiTablePagination-toolbar': {
-                          backgroundColor: '#eee',
-                          width: '950px',
+                          backgroundColor: '#fff',
+                          width: '95%',
                           color: 'rgb(41, 39, 39)',
                           height: '35px',
                           fontFamily: 'Poppins',
+                          marginTop: 2
                         },
                       }}
                     component="div"
                     labelRowsPerPage={"Itens por página"}
-                    count={100}
+                    count={20}
                     page={page}
                     onPageChange={handleChangePage}
                     rowsPerPage={rowsPerPage}

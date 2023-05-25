@@ -188,7 +188,7 @@ const CreateCatalog = () => {
         const catalog = {
             title: title,
             description: description,
-            attachmentinfo: attachment ,
+            attachment: attachment ,
             categoryType:{
                 type: categoryType
             },
@@ -202,17 +202,19 @@ const CreateCatalog = () => {
         if(!validateCatalogfields(catalog) ){
             try{
                 setOpenBackDrop(!openBackDrop)
-                const response = await api.post("/api/v1/catalog/create", catalog );
-                console.log(response.data.id);
-                setOpenBackDrop(openBackDrop)
-                await timeout(1000);
-                const formData = new FormData();
-                formData.append('file', selectedFile);
-                formData.append("id", response.data.id);
-                const response2 = await api.post("api/v1/file/upload", formData );
-                setOpenSnackBarSuccess(true);
+                const response = api.post("/api/v1/catalog/create", catalog ).then(response => {
+                    const formData = new FormData();
+                    formData.append('file', selectedFile);
+                    formData.append("id", response.data.id);
+
+                    api.post("api/v1/file/upload", formData ).then( response2 => {          
+                        navigate('/Catalogo' , { state: { id: response.data.id }});
+                        setOpenBackDrop(openBackDrop)
+                        setOpenSnackBarSuccess(true);
+                    });
+
+                })
                 
-                navigate('/Catalogo' , { state: { id: response.data.id }});
             }
             catch(err){
                 if(err.response.status === 500){
@@ -434,8 +436,64 @@ const CreateCatalog = () => {
                             <Form onSubmit={handleSignIn}>
                                 {error && <p>{error}</p>}
                                 <TextField sx={style} id="standard-text" label="Titulo" variant="standard"  onChange={e => setTitle(e.target.value) } />
-                                <TextField sx={style} id="standard-description" label="Descrição" variant="standard"  onChange={e => setDescription(e.target.value) } />
+                                <TextField sx={style} id="standard-description" label="Descrição" variant="standard" rows={2} multiline  onChange={e => setDescription(e.target.value) } />
                                 
+                                <Autocomplete
+                                sx={style}
+                                value={categoryValue}
+                                onChange={(event, newValue) => {
+                                if (typeof newValue === 'string') {
+                                    // timeout to avoid instant validation of the dialog's form.
+                                    setTimeout(() => {
+                                    toggleCategoryOpen(true);
+                                    setDialogValue({
+                                        type: newValue,
+                                    });
+                                    });
+                                } else if (newValue && newValue.inputValue) {
+                                    toggleCategoryOpen(true);
+                                    setDialogValue({
+                                    type: newValue.inputValue,
+                                    });
+                                } else {
+                                    setCategoryValue(newValue);
+                                }
+                                }}
+                                filterOptions={(options, params) => {
+                                const filtered = filter(options, params);
+
+                                if (params.inputValue !== '') {
+                                    filtered.push({
+                                    inputValue: params.inputValue,
+                                    type: `Add "${params.inputValue}"`,
+                                    });
+                                }
+
+                                return filtered;
+                                }}
+                                id="free-solo-dialog-demo"
+                                options={categoryTypesFromBack}
+                                getOptionLabel={(option) => {
+                                // e.g value selected with enter, right from the input
+                                if (typeof option === 'string') {
+                                    setCategoryType(option);
+                                    return option;
+                                }
+                                if (option.inputValue) {
+                                    setCategoryType(option.inputValue);
+                                    return option.inputValue;
+                                }
+                                setCategoryType(option.type);
+                                return option.type;
+                                }}
+                                selectOnFocus
+                                clearOnBlur
+                                handleHomeEndKeys
+                                renderOption={(props, option) => <li  {...props}>{option.type}</li>}
+                                freeSolo
+                                renderInput={(params) => <TextField sx={style} variant="standard" {...params} label="Categoria" />}
+                                />
+
                                 <Autocomplete
                                 sx={style}
                                 value={representationValue}
@@ -527,61 +585,7 @@ const CreateCatalog = () => {
                                     </form>
                                 </Dialog>   
 
-                                <Autocomplete
-                                sx={style}
-                                value={categoryValue}
-                                onChange={(event, newValue) => {
-                                if (typeof newValue === 'string') {
-                                    // timeout to avoid instant validation of the dialog's form.
-                                    setTimeout(() => {
-                                    toggleCategoryOpen(true);
-                                    setDialogValue({
-                                        type: newValue,
-                                    });
-                                    });
-                                } else if (newValue && newValue.inputValue) {
-                                    toggleCategoryOpen(true);
-                                    setDialogValue({
-                                    type: newValue.inputValue,
-                                    });
-                                } else {
-                                    setCategoryValue(newValue);
-                                }
-                                }}
-                                filterOptions={(options, params) => {
-                                const filtered = filter(options, params);
-
-                                if (params.inputValue !== '') {
-                                    filtered.push({
-                                    inputValue: params.inputValue,
-                                    type: `Add "${params.inputValue}"`,
-                                    });
-                                }
-
-                                return filtered;
-                                }}
-                                id="free-solo-dialog-demo"
-                                options={categoryTypesFromBack}
-                                getOptionLabel={(option) => {
-                                // e.g value selected with enter, right from the input
-                                if (typeof option === 'string') {
-                                    setCategoryType(option);
-                                    return option;
-                                }
-                                if (option.inputValue) {
-                                    setCategoryType(option.inputValue);
-                                    return option.inputValue;
-                                }
-                                setCategoryType(option.type);
-                                return option.type;
-                                }}
-                                selectOnFocus
-                                clearOnBlur
-                                handleHomeEndKeys
-                                renderOption={(props, option) => <li  {...props}>{option.type}</li>}
-                                freeSolo
-                                renderInput={(params) => <TextField sx={style} variant="standard" {...params} label="Categoria" />}
-                                />
+                                
 
                                 <Autocomplete
                                     sx={style}
