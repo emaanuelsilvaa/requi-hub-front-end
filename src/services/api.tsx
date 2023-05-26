@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getToken } from "./auth";
+import {useNavigate } from 'react-router-dom';
 
 const api = axios.create({
   baseURL: "http://localhost:8080"
@@ -15,11 +16,27 @@ api.interceptors.request.use(config => {
     config.headers = {
       'Authorization': `Bearer ${token}`,
     };
-    console.log("configgggggg "+config.headers);
   }
   return config;
 }, error => {
   return Promise.reject(error);
 });
+
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const navigate = useNavigate();
+    const config = error?.config;
+    console.log("===="+"response interceptor")
+    if (error?.response?.status === 500) {
+      config.sent = true;
+      navigate('/login')
+      console.log("===="+"response interceptor")
+
+      return axios(config);
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default api;

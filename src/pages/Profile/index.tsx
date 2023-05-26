@@ -5,6 +5,9 @@ import MenuBar from "../../components/MenuBar";
 import withAuth from "../../components/withAuth";
 import {useNavigate } from 'react-router-dom';
 import React,{useState, useEffect} from 'react';
+import { Form, DragDropContainer } from "./styles";
+
+import { getUserId, getUseEmail } from "../../services/auth";
 
 import { Container } from "./styles";
 import Avatar from "@mui/material/Avatar";
@@ -41,79 +44,20 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarBorder from '@mui/icons-material/StarBorder';
 import api from "../../services/api";
+import { profile } from "console";
 
 
-const itemData = [
-  {
-    img: 'https://t9z6z8s3.rocketcdn.me/wp-content/uploads/2015/10/Conhe%C3%A7a-o-BPMN.png',
-    title: 'Bed',
-    author: 'Swabdesign',
-    description: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur'
-  },
-  {
-    img: 'https://www.projektron.de/fileadmin/user_upload/1_bilder_website/blog/fachartikel/2022/BPMN/221212_BPMN_Teaserbild.png',
-    title: 'Books',
-    author: 'Pavel Nekoranec',
-    description: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur'
-  },
-  {
-    img: 'https://webmaissistemas.com.br/blog/app/uploads/2022/02/Simbolos-da-notacao-BPMN-2.0.webp',
-    title: 'Sink',
-    author: 'Charles Deluvio',
-    description: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur'
+export interface Profile { 
+  id: string
+  firstName: string
+  lastName: string
+  about: string
+  email: string
+  profilePhoto: string
+}
 
-  },
-  {
-    img: 'https://cdn-images.zety.com/pages/curriculum_pdf_zety_br_1.jpg',
-    title: 'Kitchen',
-    author: 'Christian Mackie',
-    description: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur'
-
-  },
-  {
-    img: 'https://www.empregare.com/assetsV2/common/images/gerador-curriculo/exemplo_cadastro_curriculo_mobile.png',
-    title: 'Blinds',
-    author: 'Darren Richardson',
-    description: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur'
-
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1574180045827-681f8a1a9622',
-    title: 'Chairs',
-    author: 'Taylor Simpson',
-    description: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur'
-
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1530731141654-5993c3016c77',
-    title: 'Laptop',
-    author: 'Ben Kolde',
-    description: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur'
-
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1481277542470-605612bd2d61',
-    title: 'Doors',
-    author: 'Philipp Berndt',
-    description: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur'
-
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1517487881594-2787fef5ebf7',
-    title: 'Coffee',
-    author: 'Jen P.',
-    description: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur'
-
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1516455207990-7a41ce80f7ee',
-    title: 'Storage',
-    author: 'Douglas Sheppard',
-    description: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur'
-
-  },
-];
 export interface Catalog { 
+  id: string;
   title: string;
   description: string;
   attachment: any;
@@ -148,23 +92,39 @@ const Profile = () => {
 
     const [catalog, setCatalog] = React.useState<Catalog | null>(null);
 
-    async function getAnsCategory(){
+    const [profileInfo, setProfileInfo] = React.useState<Profile | null>(null);
+
+    async function getAnsCatalogs(){
       /* inserir trycatch */
-      let output = await api.get("api/v1/catalog/find/by/author?id=1");
+      let output = await api.get("api/v1/catalog/find/by/author?id="+getUserId());
       console.log(output);
       
       return setCatalog(output.data.content);
    
   };
+  async function getAnsProfile(){
+    /* inserir trycatch */
+    let output = await api.get("/api/v1/users/email?email="+getUseEmail());
+    console.log(output);
+    return setProfileInfo(output.data);
+  };
   useEffect(() => {
-      getAnsCategory();
-      
+    getAnsCatalogs();
+    getAnsProfile();
   },[])
 
     const handleClick = () => {
         setOpenSubMenu(!openSubMenu);
     };
 
+    const handleCard = (item : Catalog, e) => {
+      navigate('/Catalogo' , { state: { id: item.id }});
+    };
+
+    const handleEditProfile = async e  => {
+      e.preventDefault();
+      navigate('/profile/edit' , { state: { id: getUseEmail() }});
+    }
 
 
     const handleChangePage = async (
@@ -207,15 +167,27 @@ const Profile = () => {
       >
           <Typography mt={4} mb={2} fontFamily='Poppins' color={'#7B1026'} fontSize={30} align={"center"}>
             Perfil</Typography>
-          <Avatar sx={{ width: 104, height: 104, margin: 1 }} alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-          <Typography mt={1} fontFamily='Poppins' color={'#00000'} fontSize={20} align={"center"}>
-                Nome do usuario
-          </Typography>
-          <Typography mt={1} fontFamily='Poppins' color={'#00000'} fontSize={20} align={"center"}>
-                Bio
-          </Typography>
+          
+          {profileInfo && ( <Avatar sx={{ width: 154, height: 154, margin: 1 }} alt="Remy Sharp" src={`${ 'data:image/png;base64,'+profileInfo.profilePhoto }`} />
+          )}
+
+          {profileInfo && (
+              <Typography mt={1} fontFamily='Poppins' color={'#00000'} fontSize={20} align={"center"}>
+                {profileInfo.firstName + " " + profileInfo.lastName}
+            </Typography>
+          )}
+          
+
+          {profileInfo && (
+              <Typography mt={1} fontFamily='Poppins' color={'#00000'} fontSize={20} align={"center"}>
+                {profileInfo.about}
+            </Typography>
+          )}
+
           <Box mt={1}>
-            <Button color="info" variant="outlined" onClick={() => handleEditPerfil()} >Editar Perfil </Button>
+            <Form onSubmit={handleEditProfile}>
+              <button style={{cursor: 'pointer'}} type="submit">Editar Perfil</button>
+            </Form>
           </Box>    
           <Divider color="#7B1026" sx={{ mt: 2, fontSize:"25px", padding:"15px"}} orientation="horizontal" flexItem light> Criados</Divider>
       </Grid>
@@ -293,7 +265,7 @@ const Profile = () => {
                     <Grow in={true} timeout={600}>
                         <Grid item xs={2} sm={3} md={3} key={item.title}>
                             <Card key={id} sx={{ maxWidth: 300 }}>
-                                <CardActionArea>
+                                <CardActionArea onClick={e => handleCard(item, e)}>
                                     <CardMedia
                                     
                                     component="img"
