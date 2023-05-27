@@ -7,6 +7,9 @@ export const getToken = () => localStorage.getItem(TOKEN_KEY);
 export const getUserId = () => localStorage.getItem(ID_USER);
 export const getUseEmail = () => localStorage.getItem(EMAIL_USER);
 export const getProfilePhoto = () => localStorage.getItem(PROFILE_PHOTO_USER);
+export const setNewPhoto = (data: any) => {
+  localStorage.setItem(PROFILE_PHOTO_USER, data);
+};
 export const login = (data: any) => {
   localStorage.setItem(TOKEN_KEY, data.token);
   localStorage.setItem(EMAIL_USER, data.email);

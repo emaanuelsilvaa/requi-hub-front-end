@@ -301,8 +301,9 @@ const Repository = () => {
                     count={20}
                     page={page}
                     onPageChange={handleChangePage}
-                    rowsPerPage={rowsPerPage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    rowsPerPage={20}
+                    rowsPerPageOptions={[20]}
+                    //onRowsPerPageChange={handleChangeRowsPerPage}
                 />
                 </Box>
             </Box>

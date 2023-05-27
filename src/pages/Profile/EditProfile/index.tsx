@@ -9,7 +9,7 @@ import withAuth from "../../../components/withAuth";
 import { Container } from "./styles";
 import React,{useEffect, useState} from 'react';
 import api from "../../../services/api";
-import { getUserId, getUseEmail } from "../../../services/auth";
+import { getUseEmail, setNewPhoto } from "../../../services/auth";
 import { Form } from "./styles";
 import Grow from "@mui/material/Grow";
 import { useNavigate } from "react-router-dom";
@@ -73,7 +73,6 @@ const EditProfile = () => {
         e.preventDefault();
         const file = e.target.files[0];
         setSelectedProfileAvatar(e.target.files[0]);
-        //setProfileInfo( {...profileInfo, profilePhoto: selectedProfileAvatar  } )
     }
 
     const handleUpdateProfile = async e  => {
@@ -83,6 +82,7 @@ const EditProfile = () => {
             console.log("IDENTIFICOU QUE TEVE ALTERAÇÃO NA IMAGEM");
             const base64 = await convertBase64(selectedProfileAvatar);
             setProfileInfo( {...profileInfo, profilePhoto: base64  } )
+            setNewPhoto(base64);
             window.location.reload();
         }else{
             try{
@@ -99,6 +99,7 @@ const EditProfile = () => {
                 const response = await api.put("/api/v1/users/update", profile ).then(response => {
                     setOpenUpdateProfileBackDrop(openUpdateProfileBackDrop)
                     setOpenSnackBar(true);
+                    window.location.reload();
                 })
                 
             }
@@ -148,6 +149,7 @@ const EditProfile = () => {
     
     const handleClose = () => {
     };
+
     
     return(
         <Container sx={{ flexGrow: 1 }}>

@@ -126,6 +126,12 @@ const Profile = () => {
       navigate('/profile/edit' , { state: { id: getUseEmail() }});
     }
 
+    const handleDeleteCatalog = async (item : Catalog, e) => {
+      const response = await api.delete("/api/v1/catalog/delete?id="+item.id).then(response => {
+        getAnsCatalogs()
+        window.location.reload();
+    })
+    };
 
     const handleChangePage = async (
         event: React.MouseEvent<HTMLButtonElement> | null,
@@ -311,7 +317,7 @@ const Profile = () => {
                                     </Typography>
                                     </CardContent>
                                 </CardActionArea>
-                                <CardActions>
+                                <CardActions onClick={e => handleDeleteCatalog(item, e)}>
                                 <Button size="small" color="primary">
                                   Excluir
                                 </Button>
