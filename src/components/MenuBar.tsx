@@ -12,7 +12,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { logout } from "../services/auth";
+import { logout, getProfilePhoto } from "../services/auth";
 
 export const TOKEN_KEY = "@requiHub-Token";
 export const isAuthenticated = () => localStorage.getItem(TOKEN_KEY) !== null;
@@ -159,7 +159,7 @@ function ResponsiveAppBar() {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 {<IconButton style={ isAuthenticated() ? {} : { display: 'none' }} onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt="Remy Sharp" src={(isAuthenticated() && getProfilePhoto() != null ? getProfilePhoto() : "/static/images/avatar/2.jpg" )}/>
                 </IconButton>}
               </Tooltip>
               <Menu

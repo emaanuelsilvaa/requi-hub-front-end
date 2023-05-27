@@ -163,6 +163,7 @@ const ViewCatalog = () => {
                         justifyContent: 'left',
                         bgcolor: '#fff',
                         borderRadius: 4,
+                        pr: 8
                         }}  
                 >
                     
@@ -186,9 +187,12 @@ const ViewCatalog = () => {
                         bgcolor: '#eee',
                         cursor: 'pointer',
                         height: 400,
-                        width: 600,
-                        maxHeight: { xs: 433, md: 367 },
-                        maxWidth: { xs: 433, md: 367 },
+                        minWidth: 500,
+                        maxHeight: { xs: 433, md: 567 },
+                        maxWidth: { xs: 633, md: 767 },
+                        backgroundPosition: 'center',
+                        backgroundSize: 'cover',
+                        objectFit: 'cover'
                         }}
                         alt="Catalog File."
                         src={selectedFile != null ? URL.createObjectURL(selectedFile) : ""}

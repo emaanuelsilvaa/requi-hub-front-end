@@ -168,7 +168,7 @@ const Profile = () => {
           <Typography mt={4} mb={2} fontFamily='Poppins' color={'#7B1026'} fontSize={30} align={"center"}>
             Perfil</Typography>
           
-          {profileInfo && ( <Avatar sx={{ width: 154, height: 154, margin: 1 }} alt="Remy Sharp" src={`${ 'data:image/png;base64,'+profileInfo.profilePhoto }`} />
+          {profileInfo && ( <Avatar sx={{ width: 154, height: 154, margin: 1 }} alt="Remy Sharp" src={`${profileInfo.profilePhoto }`} />
           )}
 
           {profileInfo && (
