@@ -9,6 +9,7 @@ import { Form, Container } from "./styles";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
+import MenuBar from '../../components/MenuBar';
 
 const style = {
   "& label.Mui-focused": {
@@ -50,7 +51,7 @@ const SignUp = () => {
   };
 
   return (
-    <Container>
+    <Container sx={{ flexGrow: 1 }}>
       <Box
       sx={{
         display: 'flex',
@@ -61,6 +62,7 @@ const SignUp = () => {
         borderRadius: 1,
       }}
     >
+      
       <Form onSubmit={handleSignUp}>
         <h1>Cadastro</h1>
         {error && <p>{error}</p>}
