@@ -30,6 +30,8 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import api from "../../services/api";
 
+import CatalogFilters from "../../components/CatalogFilters";
+
 export interface Profile {
   id: string;
   firstName: string;
@@ -64,16 +66,24 @@ interface ContentPagination<T> {
 
 interface PageFilters {
   currentPage: number;
+  title: string;
+  representationType: string;
+  categoryType: string;
+  tags: string[];
 }
 
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const [expandTagFilters, setExpandTagFilters] = useState(true);
 
   const [pageFilters, setPageFilters] = useState<PageFilters>({
     currentPage: 0,
+    title: "",
+    representationType: "",
+    categoryType: "",
+    tags: []
   });
+
 
   const [catalogPagination, setCatalogPagination] =
     useState<ContentPagination<Catalog> | null>(null);
@@ -92,10 +102,15 @@ const Profile = () => {
 
   async function getAnsCatalogs() {
     setIsLoading(true);
-
+    console.log(pageFilters);
     try {
-      const { data } = await api.get("api/v1/catalog/find/by/author?userId="+getUserId(), {
+      const { data } = await api.get("/api/v1/catalog/filter", {
         params: {
+          userId: getUseEmail() || "",
+          title: pageFilters.title || "" ,
+          categoryType: pageFilters.categoryType || "",
+          representationType: pageFilters.representationType || "",
+          subjectTags: pageFilters.tags.join() || "" ,
           page: pageFilters.currentPage,
         },
       });
@@ -234,85 +249,10 @@ const Profile = () => {
           borderRadius: 2,
         }}
       >
-        <Box
-          sx={{
-            maxWidth: 180,
-            minWidth: 180,
-            minHeight: 500,
-            mr: 2,
-            padding: 2,
-            background: "#7B1026",
-            borderTopLeftRadius: 8,
-            borderBottomLeftRadius: 8,
-          }}
-        >
-          <List
-            sx={{ width: "100%", maxWidth: 200, bgcolor: "#7B1026" }}
-            component="nav"
-            aria-labelledby="nested-list-subheader"
-            subheader={
-              <ListSubheader
-                component="div"
-                id="nested-list-subheader"
-                sx={{
-                  mb: 3,
-                  bgcolor: "#7B1026",
-                  color: "#fff",
-                  alignItems: "center",
-                  fontSize: 22,
-                }}
-              >
-                <FilterListIcon
-                  sx={{ pr: 2, pl: 2, pt: 2, width: 25, height: 25 }}
-                ></FilterListIcon>
-                Filtros
-              </ListSubheader>
-            }
-          >
-            <ListItemButton sx={{ color: "#fff" }}>
-              <ListItemText
-                primary="TÍTULO"
-                color="#ffff"
-                primaryTypographyProps={{ fontSize: "13px" }}
-              />
-            </ListItemButton>
-            <ListItemButton sx={{ color: "#fff" }}>
-              <ListItemText
-                primary="TIPO DE REPRESENTAÇÃO"
-                color="#ffff"
-                primaryTypographyProps={{ fontSize: "13px" }}
-              />
-            </ListItemButton>
-            <ListItemButton sx={{ color: "#fff" }}>
-              <ListItemText
-                primary="CATEGORIA"
-                primaryTypographyProps={{ fontSize: "13px" }}
-              />
-            </ListItemButton>
-            <ListItemButton
-              onClick={() => setExpandTagFilters(!expandTagFilters)}
-              sx={{ color: "#fff" }}
-            >
-              <ListItemText
-                primary="TAGS"
-                primaryTypographyProps={{ fontSize: "13px" }}
-              />
-              {expandTagFilters ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={expandTagFilters} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 4, color: "#fff" }}>
-                  <ListItemText primary="Starred" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4, color: "#fff" }}>
-                  <ListItemText primary="Starred" />
-                </ListItemButton>
-              </List>
-            </Collapse>
-          </List>
-        </Box>
+        <CatalogFilters onfilter={(filters) => setPageFilters( {currentPage : 0, ...filters} ) } />
 
         <Box sx={{ flexGrow: 1, mt: 2 }}>
+          
           {catalogPagination && (
             <>
               <Grid
