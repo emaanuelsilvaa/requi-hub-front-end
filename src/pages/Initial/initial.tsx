@@ -21,12 +21,12 @@ export default function initial() {
         <Container sx={{ flexGrow: 1 }}>
             <ResponsiveAppBar/>
             <Grow in={true} timeout={300}>
-                <Box  paddingX={20} paddingY={5} display='flex' flexDirection='column' gap={2} >
-                    <Box flexDirection='row' gap={2}>
+                <Box  paddingX={20} paddingY={5} display='flex' flexDirection='column' gap={2} sx={{minHeight: 300}} >
+                    <Box flexDirection='row' gap={2} sx={{mt: 5}}>
                     <SearchField />
                     </Box>
 
-                    <Box >
+                    <Box sx={{mt: 5}}>
                     <Typography fontFamily='Poppins' fontWeight='bold' color={'#7B1026'} fontSize={40} >
                     Encontre, compartilhe e construa requisitos.
                     </Typography>
@@ -42,7 +42,8 @@ export default function initial() {
                 style={{ transformOrigin: '0 0 0' }}
                 {...(true ? { timeout: 1000 } : {})}
                 >
-                <Box  paddingX={20} display='flex' flexDirection='column' gap={2} >
+                <Box  paddingX={20} display='flex' flexDirection='column' gap={2} sx={{minHeight: 250}} >
+
                     <Box flexDirection='row' gap={2}>
                     </Box>
                     <Typography fontWeight='bold' fontFamily='Poppins' color={'#7B1026'} fontSize={30} align={"left"}>
@@ -63,46 +64,9 @@ export default function initial() {
                 <hr style={{ margin: '30px', color: "#eee", border: 'none', borderBottom: '1px solid #cdcdcd'  }} ></hr>
 
             </Box>
-            <Box  paddingX={20} display='flex' flexDirection='column' gap={2} >
-                <Box flexDirection='row' gap={2} marginBottom={3}>
-                    <Typography fontWeight='bold' fontFamily='Poppins' color={'#7B1026'} fontSize={30} align={"left"}>
-                        Estatisticas
-                    </Typography>
-                </Box>
-                <Box display='flex' flexDirection='row' marginLeft={10}>
-                    <Card  sx={{ maxWidth: 345 }}>
-                        <CardMedia
-                        component="img"
-                        height="120"
-                        image="./document.png"
-                        alt="Document"
-                        sx={{ padding: "1em 1em 0 1em", objectFit: "contain" }}
-                        />
-                        <CardContent>
-                        <Typography gutterBottom variant="h6" component="div" fontFamily='Poppins'>
-                            100+ Documentos
-                        </Typography>
-                        </CardContent>
-                    </Card>
-                    <Card  sx={{ maxWidth: 345, marginLeft: 30 }}>
-                        <CardMedia
-                        component="img"
-                        height="120"
-                        image="./group.png"
-                        alt="Document"
-                        sx={{ padding: "1em 1em 0 1em", objectFit: "contain" }}
-                        />
-                        <CardContent>
-                        <Typography gutterBottom variant="h6" component="div" fontFamily='Poppins'>
-                            100+ Colaboradores
-                        </Typography>
-                        </CardContent>
-                    </Card>
-                </Box>
-            </Box>
 
-            <Box  paddingX={20} display='flex' flexDirection='column' gap={2} bgcolor="#7B1026" paddingTop={5} marginTop={2} >
-                <Box flexDirection='row' gap={2}>
+            <Box  paddingX={10} display='flex' flexDirection='column' gap={2} bgcolor="#7B1026" paddingTop={1} marginTop={2} >
+                <Box flexDirection='row' gap={1}>
                 </Box>
                 <Typography fontWeight='bold' fontFamily='Poppins' color={'#FFFF'} fontSize={30} align={"center"}>
                     RequiHub
@@ -110,7 +74,7 @@ export default function initial() {
                 <Typography fontWeight='bold' fontFamily='Poppins' color={'#FFFF'} fontSize={10} align={"center"}>
                     RequiHub (C) All rights Reserved
                 </Typography>
-                <GitHubIcon sx={{ color: '#FFFF', alignSelf: 'center', width: 20, height: 20, paddingY: 2 }} ></GitHubIcon>
+                <GitHubIcon sx={{ color: '#FFFF', alignSelf: 'center', width: 20, height: 20, paddingY: 1 }} ></GitHubIcon>
             </Box>
         </Container>
 
