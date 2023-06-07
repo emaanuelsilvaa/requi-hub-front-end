@@ -213,7 +213,9 @@ const EditProfile = () => {
                         size={"small"}
                         sx={style}
                         rows={3}
-                        defaultValue={profileInfo.about && profileInfo.about}/>
+                        defaultValue={profileInfo.about && profileInfo.about}
+                        onChange={e => setProfileInfo({...profileInfo, about: e.target.value }) }
+                        />
                     )}
                     <Form onSubmit={handleUpdateProfile}>
                     <button style={{cursor: 'pointer'}} type="submit">Salvar</button>

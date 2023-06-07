@@ -1,11 +1,10 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  background: #FFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 90vh;
 `;
 
 export const Form = styled.form`
@@ -39,6 +38,7 @@ export const Form = styled.form`
     border: 0;
     border-radius: 3px;
     width: 100%;
+    cursor: pointer;
   }
   hr {
     margin-bottom: 10px;

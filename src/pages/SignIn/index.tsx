@@ -15,6 +15,7 @@ import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import Snackbar from "@mui/material/Snackbar";
+import MenuBar from "../../components/MenuBar";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -85,57 +86,58 @@ const SignIn = () => {
   };
 
   return (
-    <Container>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          p: 1,
-          m: 1,
-          bgcolor: '#eee',
-          borderRadius: 1,
-        }}
-      >
-        <Form onSubmit={handleSignIn}>
-          <h1>Entrar</h1>
-          <a>Não possui uma conta ? Criar conta grátis </a>
-          {error && <p>{error}</p>}
-          <TextField id="standard-basic" sx={style} label="Endereço de e-mail" variant="standard" onChange={e => setEmail(e.target.value) } />
-          <TextField id="standard-basic" type="password" sx={style}  label="Senha" variant="standard" onChange={e => setPassword(e.target.value)}  />
-          <a>Esqueceu a senha ? </a>
-          <button type="submit">Entrar</button>
-          <hr />
-          <Link to="/Cadastro">Ou Fazer login com</Link>
-          {redirect && <Navigate to='/homev2' replace={true}/>}
-        </Form>
-        <Divider sx={{ m: 4, backgroundColor: '#818E9B'}} orientation="vertical" flexItem/>
-        <Typography
-          variant="h6"
+    <Box sx={{ flexGrow: 1, alignItems: "center" }}>
+      <MenuBar/>
+        <Box
           sx={{
-            m: 23,
-            flexGrow: 1,
-            fontFamily: 'Poppins',
-            fontWeight: 1000,
-            color: '#7B1026',
-            textDecoration: 'none',
+            maxWidth: 1200,
+            display: 'flex',
+            justifyContent: 'center',
+            p: 1,
+            m: 10,
+            bgcolor: '#eee',
+            borderRadius: 1,
           }}
         >
-          RequiHub
-        </Typography>
-      </Box>
-      
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={open}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-      <Snackbar open={open1} autoHideDuration={6000} onClose={handleClose}  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-          Login Realizado com sucesso !
-        </Alert>
-      </Snackbar>
-    </Container>
+          <Form onSubmit={handleSignIn}>
+            <h1>Entrar</h1>
+            <a>Não possui uma conta ? <Link to="/Cadastro">Criar conta grátis.</Link>  </a>
+            {error && <p>{error}</p>}
+            <TextField id="standard-basic" sx={style} label="Endereço de e-mail" variant="standard" onChange={e => setEmail(e.target.value) } />
+            <TextField id="standard-basic" type="password" sx={style}  label="Senha" variant="standard" onChange={e => setPassword(e.target.value)}  />
+            <a>Esqueceu a senha ? </a>
+            <button type="submit">Entrar</button>
+            <hr />
+            {redirect && <Navigate to='/profile/:name' replace={true}/>}
+          </Form>
+          <Divider sx={{ m: 4, backgroundColor: '#818E9B'}} orientation="vertical" flexItem/>
+          <Typography
+            variant="h6"
+            sx={{
+              m: 20,
+              flexGrow: 1,
+              fontFamily: 'Poppins',
+              fontWeight: 1000,
+              color: '#7B1026',
+              textDecoration: 'none',
+            }}
+          >
+            RequiHub
+          </Typography>
+        </Box>
+        
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={open}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+        <Snackbar open={open1} autoHideDuration={6000} onClose={handleClose}  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+          <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+            Login Realizado com sucesso !
+          </Alert>
+        </Snackbar>
+    </Box>
   );
 }
 

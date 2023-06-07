@@ -2,17 +2,17 @@ import styled from "styled-components";
 
 
 export const Container = styled.div`
-    background: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: 90vh;
 `;
 
 export const Form = styled.form`
-  width: 300px;
+  width: 400px;
   background: #eee;
   padding: 30px;
+  margin: 30px;
   display: flex;
   flex-direction: column;
   align-items: right;
@@ -34,6 +34,7 @@ export const Form = styled.form`
     border: 0;
     border-radius: 3px;
     width: 100%;
+    cursor: pointer;
   }
   hr {
     margin: 20px 0;
