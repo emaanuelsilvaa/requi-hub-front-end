@@ -68,7 +68,7 @@ const SignUp = () => {
 
         try {
         setOpen(!open);
-        const response = await api.post("/api/v1/auth/register", { firstName, lastName, email, password, sobre });
+        const response = await api.post("/api/v1/public/auth/register", { firstName, lastName, email, password, sobre });
         setOpen(false);
         handleClick();
         setRedirect(true);

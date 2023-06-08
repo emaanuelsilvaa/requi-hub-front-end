@@ -42,6 +42,7 @@ const filter = createFilterOptions<OptionType>();
 interface OptionType {
     id?: number;
     inputValue?: string;
+    isDefault?: boolean;
     type?: string;
     
 }
@@ -179,6 +180,7 @@ const CreateCatalog = () => {
     useEffect(() => {
         getAnsCategory();
         getAnsRepresentations();
+        console.log(representationTypes);
     },[])
 
     const handleSignIn = async e  => {
@@ -247,6 +249,19 @@ const CreateCatalog = () => {
         type: '',
         });
         toggleRepresentationyOpen(false);
+    };
+
+    const deleteRepresentation = async (option : OptionType) => {
+        setOpenBackDropDialog(!openBackDropDialog)
+        try {
+            const { data } = await api.delete("api/v1/catalog/representation_type/delete?id="+option.id);
+            await timeout(1000);
+            setOpenBackDropDialog(openBackDropDialog)
+            setRepresentationTypes( representationTypes.filter(item => item.id !== option.id))
+          } catch (error) {
+            alert("Erro ao obter dados de perfil");
+          } finally {
+          }
     };
 
 
@@ -556,9 +571,21 @@ const CreateCatalog = () => {
                                 selectOnFocus
                                 clearOnBlur
                                 handleHomeEndKeys
-                                renderOption={(props, option) => <li  {...props}>{option.type}</li>}
+                                renderOption={(props, option) => 
+                                <Box sx={{display: 'flex',
+                                justifyContent: 'space-between',
+                                flexDirection: 'row',}}>
+                                    <li  {...props}>{option.type}</li> 
+                                    {option.isDefault == false ?
+                                    <Button size="small" color="error" onClick={e => deleteRepresentation(option)}>
+                                    Remover
+                                    </Button> : 
+                                    <></>}
+                                </Box> 
+                                }
                                 freeSolo
-                                renderInput={(params) => <TextField sx={style} variant="standard" {...params} label="Tipo de representação" />}
+                                renderInput={(params) => 
+                                <TextField sx={style} variant="standard" {...params} label="Tipo de representação" />}
                                 />
                                 <Dialog open={openRepresentation} onClose={handleRepresentationClose}>
                                     <Backdrop
