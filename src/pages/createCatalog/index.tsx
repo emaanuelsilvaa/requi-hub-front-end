@@ -49,9 +49,10 @@ interface OptionType {
 export interface Catalog { 
     title: string;
     description: string;
+    bibliographicReference: string;
     attachmentModel: {};
-    categoryType: { type: string; };
-    representationTypeModel: {type: string;};
+    categoryType: { type: string };
+    representationTypeModel: {type: string};
     subjectTags: [];
 }
 
@@ -111,6 +112,7 @@ const CreateCatalog = () => {
     const navigate = useNavigate();
     const [ title, setTitle ] = useState("");
     const [ description, setDescription ] = useState("");
+    const [ bibliographicReference, setBibliographicReference ] = useState("");
     const [ attachment, setAttachment ] = useState({ 
         selectedFile: "",
         fileType:"",
@@ -138,7 +140,7 @@ const CreateCatalog = () => {
 
     /* VALIDATIONS */
     const validateCatalogfields = (catalog) => {
-        if(!catalog.title || !catalog.description || catalog.representationTypeModel.type == "" || 
+        if(!catalog.title || !catalog.description || catalog.representationTypeModel.type == "" || !selectedFile ||
             catalog.categoryType.type == "" || !Object.values(subjectTags).some(x => x !== null && x !== '') ){
             return true;
         }
@@ -189,6 +191,7 @@ const CreateCatalog = () => {
             title: title,
             description: description,
             attachment: attachment ,
+            bibliographicReference: bibliographicReference,
             categoryType:{
                 type: categoryType
             },
@@ -291,14 +294,21 @@ const CreateCatalog = () => {
         else{
             setNotIsPdfFile(true)
         }
-        setAttachment({
-            selectedFile: "",
-            fileType: e.target.files[0].type,
-            fileSize: e.target.files[0].size
-         });
-
-         setSelectedFile(e.target.files[0]);
-         setHasSelectedFile(true);
+        if(e.target.files[0].type.includes("pdf") || e.target.files[0].type.includes("jpeg") || e.target.files[0].type.includes("png") ){
+            setAttachment({
+                selectedFile: "",
+                fileType: e.target.files[0].type,
+                fileSize: e.target.files[0].size
+             });
+    
+             setSelectedFile(e.target.files[0]);
+             setHasSelectedFile(true);
+             setError("");
+        }
+        else{
+            setError("Error no formato de arquivo selecionado");
+        }
+        
     }
 
     const removeSelectedFile=(e) => {
@@ -437,6 +447,7 @@ const CreateCatalog = () => {
                                 {error && <p>{error}</p>}
                                 <TextField sx={style} id="standard-text" label="Titulo" variant="standard"  onChange={e => setTitle(e.target.value) } />
                                 <TextField sx={style} id="standard-description" label="Descrição" variant="standard" rows={2} multiline  onChange={e => setDescription(e.target.value) } />
+                                <TextField sx={style} id="standard-description" label="Referencia Bibliografica" variant="standard" rows={2} multiline  onChange={e => setBibliographicReference(e.target.value) } />
                                 
                                 <Autocomplete
                                 sx={style}

@@ -55,6 +55,7 @@ interface Filters {
   title: string;
   representationType: string;
   categoryType: string;
+  bibliographicReference: string;
   tags: string[];
 }
 
@@ -69,6 +70,7 @@ export default function CatalogFilters({onfilter} : CatalogFiltersProps ) {
   const [filters, setFilters] = useState<Filters>({
     title: "",
     representationType: "",
+    bibliographicReference: "",
     categoryType: "",
     tags: [],
   });
@@ -157,7 +159,28 @@ export default function CatalogFilters({onfilter} : CatalogFiltersProps ) {
             />
           </ListItem>
           <ListItem>
+            <TextField
+              id="bibliographicReference"
+              label="Referencia Bibliografica"
+              type="text"
+              InputLabelProps={{
+                shrink: true,
+                style: {
+                  color: "#fff",
+                },
+              }}
+              variant="standard"
+              sx={filterStyle}
+              value={filters.bibliographicReference}
+              onChange={(event) => {
+                setFilters({ ...filters, bibliographicReference: event.target.value });
+              }}
+            />
+          </ListItem>
+          <ListItem>
             <Autocomplete
+              autoSelect
+              freeSolo
               id="representationTypes"
               value={filters.representationType}
               onChange={(_, newValue) => {
@@ -188,6 +211,8 @@ export default function CatalogFilters({onfilter} : CatalogFiltersProps ) {
           </ListItem>
           <ListItem>
             <Autocomplete
+              freeSolo
+              autoSelect
               id="categoryTypes"
               value={filters.categoryType}
               onChange={(_, newValue) => {

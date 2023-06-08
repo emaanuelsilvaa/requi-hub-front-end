@@ -105,7 +105,7 @@ const SignIn = () => {
             {error && <p>{error}</p>}
             <TextField id="standard-basic" sx={style} label="Endereço de e-mail" variant="standard" onChange={e => setEmail(e.target.value) } />
             <TextField id="standard-basic" type="password" sx={style}  label="Senha" variant="standard" onChange={e => setPassword(e.target.value)}  />
-            <a>Esqueceu a senha ? </a>
+            <a>Esqueceu a senha ? <Link to="/recuperar-senha">clique aqui !</Link> </a>
             <button type="submit">Entrar</button>
             <hr />
             {redirect && <Navigate to='/profile/:name' replace={true}/>}

@@ -9,6 +9,7 @@ import CreateCatalog from "./pages/createCatalog";
 import EditProfile from "./pages/Profile/EditProfile";
 import ViewCatalog from "./pages/viewCatalog";
 import Repository from "./pages/repository";
+import RecoveryPassword from "./pages/recovery-password";
 
 interface Props {
   component?: any,
@@ -24,6 +25,7 @@ const AppRoutes = () => (
       <Route path="/homev2" element={<Initial/>} />
       <Route path="/Login" element={<SignIn/>} />
       <Route path="/Cadastro" element={<SignUp/>} />
+      <Route path="/recuperar-senha" element={<RecoveryPassword/>} />
       <Route path="*" element={<h1>Page not found</h1>} />
       <Route path="/" element={<Navigate to="/homev2" replace />}/>
       <Route path="/profile/:name" element={<Profile />}/>

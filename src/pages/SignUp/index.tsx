@@ -37,6 +37,7 @@ const SignUp = () => {
   const [ lastName, setLastName ] = useState("");
   const [ email, setEmail ] = useState("");
   const [ password, setPassword ] = useState("");
+  const [ passwordRepeated, setPasswordRepeated ] = useState("");
   const [ sobre, setSobre ] = useState("");
   const [ error, setError ] = useState("");
 
@@ -59,19 +60,22 @@ const SignUp = () => {
 
   const handleSignUp = async e => {
     e.preventDefault();
-    if (!firstName || !lastName || !email || !password) {
+
+    if( password != passwordRepeated){setError( "Digite a senha corretamente !");}
+    else if (!firstName || !lastName || !email || !password || !sobre ) {
       setError( "Preencha todos os dados para se cadastrar");
     } else {
 
         try {
         setOpen(!open);
-        await api.post("/api/v1/auth/register", { firstName, lastName, email, password });
+        const response = await api.post("/api/v1/auth/register", { firstName, lastName, email, password, sobre });
         setOpen(false);
         handleClick();
         setRedirect(true);
         } catch (err) {
         console.log(err);
-        setError("Ocorreu um erro ao registrar sua conta.");
+        setOpen(false);
+        setError(err.response.data.message);
         }
     }
   };
@@ -110,14 +114,14 @@ const SignUp = () => {
             onChange={e => setPassword(e.target.value) }
           />
           <TextField id="standard-basic" sx={style} type="password" label="Repita sua Senha" variant="standard" placeholder="Sua senha"
-            onChange={e => setPassword(e.target.value) } 
+            onChange={e => setPasswordRepeated(e.target.value) } 
           />
           <button type="submit">Cadastrar</button>
           <hr />
-          <Link to="/Login">Ou Clique aqui para fazer login.</Link>
+          <a>já possui loguin ? <Link to="/Login">Realizar login</Link> </a>
         </Form>
         {redirect && <Navigate to='/profile/:name' replace={true}/>}
-        
+
         <Divider sx={{ m: 4, backgroundColor: '#818E9B'}} orientation="vertical" flexItem/>
         <Typography
           variant="h6"

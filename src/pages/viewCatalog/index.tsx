@@ -1,4 +1,4 @@
-import { Box, Divider, TextField, Typography } from "@mui/material";
+import { Box, Chip, Divider, TextField, Typography } from "@mui/material";
 import { fontSize } from "@mui/system";
 import api from "../../services/api";
 import { useLocation } from "react-router-dom";
@@ -17,10 +17,23 @@ import Grow from "@mui/material/Grow";
 export interface Catalog { 
     title: string;
     description: string;
+    bibliographicReference: string;
     attachmentModel: { fileType: string, fileSize: number};
+    author: Author;
     categoryType: { type: string; };
     representationTypeModel: {type: string;};
-    subjectTags: [];
+    subjectTags: SubjectTags[];
+  }
+
+  interface Author {
+    id: number;
+    firstName: string;
+    lastName: string;
+ }
+  interface SubjectTags {
+    id: number;
+    tagName: string;
+    catalogOrigin: string;
   }
 
 
@@ -230,6 +243,26 @@ const ViewCatalog = () => {
                             {catalog && (
                                 <Typography fontFamily='Poppins' color={'#00000'}fontSize={15}> {catalog.representationTypeModel.type} </Typography>
                             )}
+                            <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Referencia bibliografica </Typography>
+                            {catalog && (
+                                <Typography fontFamily='Poppins' color={'#00000'}fontSize={15}> {catalog.bibliographicReference ? catalog.bibliographicReference : "Referencia nao cadastrada"} </Typography>
+                            )}
+                            <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Autor </Typography>
+                            {catalog && (
+                                <Typography fontFamily='Poppins' color={'#00000'}fontSize={15}> {catalog.author.firstName + " " + catalog.author.lastName } </Typography>
+                            )}
+                            <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Tags </Typography>
+                            {catalog && (
+                                <Box>
+                                    {
+                                    catalog.subjectTags.map((item, id) => (
+
+                                        <Chip label={item.tagName} variant="outlined" />
+
+                                     ))
+                                    } 
+                                </Box>
+                            )}
 
                 <Box 
                 sx={{
@@ -258,11 +291,6 @@ const ViewCatalog = () => {
                         
                     </Box>
                 </Box>   
-            </Box>
-
-            <Box>
-                <Divider color="#7B1026" sx={{ m: 4, fontSize:20 }} orientation="horizontal" flexItem light> Recomentações</Divider>
-
             </Box>
             <Box  paddingX={10} display='flex' flexDirection='column' gap={2} bgcolor="#7B1026" paddingTop={1} marginTop={2} >
                 <Box flexDirection='row' gap={2}>

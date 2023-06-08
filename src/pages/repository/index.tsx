@@ -30,6 +30,7 @@ const Item = styled(Paper)(({ theme }) => ({
 interface PageFilters {
     currentPage: number;
     title: string;
+    bibliographicReference: string;
     representationType: string;
     categoryType: string;
     tags: string[];
@@ -71,6 +72,7 @@ const Repository = () => {
         currentPage: 0,
         title: "",
         representationType: "",
+        bibliographicReference: "",
         categoryType: "",
         tags: []
     });
@@ -96,6 +98,7 @@ const Repository = () => {
             params: {
               userId: getUseEmail() || "",
               title: pageFilters.title || "" ,
+              bibliographicReference: pageFilters.bibliographicReference || "" ,
               categoryType: pageFilters.categoryType || "",
               representationType: pageFilters.representationType || "",
               subjectTags: pageFilters.tags.join() || "" ,
