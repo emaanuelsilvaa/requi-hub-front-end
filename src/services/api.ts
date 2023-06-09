@@ -29,10 +29,16 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error?.response?.status === 500) {
+    if (error?.response?.status === 500 && error?.response?.data.message.includes("JWT" || "jwt") ) {
       logout();
       window.location.reload();
       alert("Sua sessão expirou");
+    }
+    else if(error?.response?.status === 500){
+      window.location.reload();
+      alert("Error interno do servidor");
+    }else{
+      alert("Error interno do servidor");
     }
     return Promise.reject(error);
   }

@@ -118,7 +118,7 @@ const SignUp = () => {
           />
           <button type="submit">Cadastrar</button>
           <hr />
-          <a>já possui loguin ? <Link to="/Login">Realizar login</Link> </a>
+          <a>já possui login ? <Link to="/Login">Realizar login</Link> </a>
         </Form>
         {redirect && <Navigate to='/profile/:name' replace={true}/>}
 

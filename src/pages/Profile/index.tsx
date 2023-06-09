@@ -11,10 +11,7 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
 import Backdrop from "@mui/material/Backdrop";
-import ListSubheader from "@mui/material/ListSubheader";
 import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
@@ -23,11 +20,6 @@ import CardActions from "@mui/material/CardActions";
 import Grow from "@mui/material/Grow";
 import TablePagination from "@mui/material/TablePagination";
 import CircularProgress from "@mui/material/CircularProgress";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import ListItemText from "@mui/material/ListItemText";
-import Collapse from "@mui/material/Collapse";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import api from "../../services/api";
 
 import CatalogFilters from "../../components/CatalogFilters";
@@ -67,6 +59,7 @@ interface ContentPagination<T> {
 interface PageFilters {
   currentPage: number;
   title: string;
+  bibliographicReference: string;
   representationType: string;
   categoryType: string;
   tags: string[];
@@ -79,6 +72,7 @@ const Profile = () => {
   const [pageFilters, setPageFilters] = useState<PageFilters>({
     currentPage: 0,
     title: "",
+    bibliographicReference: "",
     representationType: "",
     categoryType: "",
     tags: []
@@ -108,6 +102,7 @@ const Profile = () => {
         params: {
           userId: getUseEmail() || "",
           title: pageFilters.title || "" ,
+          bibliographicReference: pageFilters.bibliographicReference || "" ,
           categoryType: pageFilters.categoryType || "",
           representationType: pageFilters.representationType || "",
           subjectTags: pageFilters.tags.join() || "" ,

@@ -84,7 +84,7 @@ const ViewCatalog = () => {
 	};
 
     async function getAnsCatalogFile(){
-        let file = await api.get("api/v1/file/download/"+state.id , {
+        let file = await api.get("/api/v1/public/catalog/download/"+state.id , {
             responseType: "arraybuffer",});
 
         return setSelectedFile(new Blob([file.data], {
@@ -95,7 +95,7 @@ const ViewCatalog = () => {
     };
     async function getAnsCatalogTextInfo(){
 
-        let output = await api.get("/api/v1/catalog/find/id/"+state.id);
+        let output = await api.get("api/v1/public/catalog/find/id/"+state.id);
         return setCatalog(output.data);
      
     };
@@ -308,4 +308,4 @@ const ViewCatalog = () => {
     
 }
 
-export default withAuth(ViewCatalog);
+export default ViewCatalog;

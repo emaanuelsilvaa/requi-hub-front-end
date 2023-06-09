@@ -19,6 +19,7 @@ const withAuth = (Component) => {
       if (isAuthenticated()) {
         return <Component />;
       } else {
+        alert("Realize o Login");
         return <Navigate to="/Login" replace />
       
          

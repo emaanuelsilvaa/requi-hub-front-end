@@ -23,6 +23,7 @@ function ResponsiveAppBar() {
   const settings = ['Perfil', 'Sair'];  
 
     const navigate = useNavigate();
+    
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   
@@ -59,7 +60,7 @@ function ResponsiveAppBar() {
     const handleNavigateUserMenu = (setting: String) => {
       if(setting == 'Sair'){
         logout();
-        window.location.reload();
+        navigate('/homev2', { replace: true });
       }
       if(setting == 'Perfil'){
         navigate('/profile/:name', { replace: true });

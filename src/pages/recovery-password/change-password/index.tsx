@@ -1,16 +1,11 @@
-import React, { useState } from "react";
-import { Link, Navigate  } from "react-router-dom";
-import api from "../../services/api";
-import { login } from "../../services/auth";
+import { useState } from "react";
+import MenuBar from "../../../components/MenuBar";
 import { Alert, Backdrop, Box, CircularProgress, Divider, Snackbar, TextField, Typography } from "@mui/material";
-import { Form, Container } from "./styles";
-import MenuBar from "../../components/MenuBar";
 import LinkMui from '@mui/material/Link';
-
-
-function timeout(delay: number) {
-    return new Promise( res => setTimeout(res, delay) );
-}
+import { Form } from "./styles";
+import { Navigate  } from "react-router-dom";
+import api from "../../../services/api";
+import { useSearchParams } from "react-router-dom";
 
 
 const style = {
@@ -26,54 +21,63 @@ const style = {
     "& .MuiInput-underline:after": {
       borderBottomColor: "#4B3D3D"
     },
-  }
+}
 
-const RecoveryPassword = () => {
+const ChangePassword = () => {
 
-    const [ email, setEmail ] = useState("");
+    let [searchParams, setSearchParams] = useSearchParams();
+    const [ password, setPassword ] = useState("");
+    const [ passwordRepeated, setPasswordRepeated ] = useState("");
     const [ redirect, setRedirect ] = useState(false);
     const [ open, setOpen ] = useState(false);
-    const [open1, setOpen1] = React.useState(false);
+    const [open1, setOpen1] = useState(false);
     const [ error, setError ] = useState("");
 
 
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         event.preventDefault();
-        if (reason === 'clickaway') {
-          return;
-        }
         setOpen1(false);
         setRedirect(true);
+        if (reason === 'clickaway') {
+          return;
+        }  
       };
       
 
-    const handleSignIn = async e => {
+    const handleChangePassword = async e => {
         e.preventDefault();
 
-        if (!email) {
-            setError("Preencha e-mail para continuar!");
+        const authResult = new URLSearchParams(window.location.search); 
+        const token = authResult.get('token')
+
+        if (!password || !passwordRepeated) {
+            setError("Preencha os campos para continuar!");
+        }
+        else if (password != passwordRepeated) {
+            setError("As duas senhas devem ser iguais");
         }
         else{
             try {
-            setOpen(!open);
-            const response = await api.post("/api/v1/public/auth/forgot-password", { email });
-            await timeout(1000);
-            setOpen(false);
-            setOpen1(true);
-            //alert("Solicitação de recuperação realizada com sucesso. cheque seu email para seguir com a solicitação."); 
-            }
-            catch (error) {
-                alert(error.response.data.message);
-            } finally {
-            }
+                setOpen(!open);
+                const response = await api.post("/api/v1/public/auth/change-password", { password,token });
+                setOpen(false);
+                setOpen1(true);
+                }
+                catch (error) {
+                    alert(error.response.data.message);
+                    setOpen(false);
+                } finally {
+                }
         }
+
+
+
     };
 
-    
     return(
         <Box>
             <MenuBar/>
-        <Box
+            <Box
           sx={{
             maxWidth: 1200,
             display: 'flex',
@@ -84,11 +88,12 @@ const RecoveryPassword = () => {
             borderRadius: 1,
           }}
         >
-          <Form onSubmit={handleSignIn}>
+          <Form onSubmit={handleChangePassword}>
             <h1>Recuperar Senha</h1>
-            <a>Digite o email cadastrado em sua conta </a>
+            <a>Digite Sua nova senha </a>
             {error && <p>{error}</p>}
-            <TextField id="standard-basic" sx={style} label="Endereço de e-mail" variant="standard" onChange={e => setEmail(e.target.value) } />
+            <TextField id="standard-basic" sx={style} type="password" label="Nova Senha" variant="standard" onChange={e => setPassword(e.target.value) } />
+            <TextField id="standard-basic" sx={style} type="password" label="Repita Sua Nova Senha" variant="standard" onChange={e => setPasswordRepeated(e.target.value) } />
             <button type="submit">Enviar</button>
             <hr />
             {redirect && <Navigate to='/Login' replace={true}/>}
@@ -119,12 +124,14 @@ const RecoveryPassword = () => {
         </Backdrop>
         <Snackbar open={open1} autoHideDuration={6000} onClose={handleClose}  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
           <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-            Solicitação de recuperação realizada com sucesso. cheque seu email para seguir com a solicitação.
+            Senha alterada com sucesso !
           </Alert>
         </Snackbar>
-        </Box>
+
+        </Box>        
     );
+
+
 }
 
-
-export default RecoveryPassword;
+export default ChangePassword;

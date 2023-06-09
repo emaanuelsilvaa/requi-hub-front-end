@@ -6,6 +6,7 @@ import { login } from "../../services/auth";
 /** Material UI Imports */
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import LinkMui from '@mui/material/Link';
 
 import { Form, Container } from "./styles";
 
@@ -122,7 +123,9 @@ const SignIn = () => {
               textDecoration: 'none',
             }}
           >
-            RequiHub
+            <LinkMui underline={"none"} href="/homeV2" sx={{bgcolor: '#eee', color:'#7B1026;'}}>
+              RequiHub
+            </LinkMui>
           </Typography>
         </Box>
         
