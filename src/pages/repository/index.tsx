@@ -94,9 +94,9 @@ const Repository = () => {
         setIsLoading(true);
         console.log(pageFilters);
         try {
-          const { data } = await api.get("/api/v1/catalog/filter", {
+          const { data } = await api.get("/api/v1/public/catalog/filter", {
             params: {
-              userId: getUseEmail() || "",
+              userId: "",
               title: pageFilters.title || "" ,
               bibliographicReference: pageFilters.bibliographicReference || "" ,
               categoryType: pageFilters.categoryType || "",
@@ -184,20 +184,6 @@ const Repository = () => {
                               color="text.secondary"
                             >
                               {item.description}
-                            </Typography>
-                            <Typography
-                              sx={{
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                display: "-webkit-box",
-                                WebkitLineClamp: "3",
-                                WebkitBoxOrient: "vertical",
-                              }}
-                              fontFamily="Poppins"
-                              variant="body2"
-                              color="text.secondary"
-                            >
-                              Tipo de representação:
                             </Typography>
                           </CardContent>
                         </CardActionArea>

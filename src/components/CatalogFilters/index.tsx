@@ -82,13 +82,13 @@ export default function CatalogFilters({onfilter} : CatalogFiltersProps ) {
 
   async function getAnsRepresentations() {
     const { data } = await api.get(
-      "/api/v1/catalog/representation_type/representations"
+      "api/v1/public/catalog/representations"
     );
     setRepresentationTypes(data.content);
   }
 
   async function getAnsCategories() {
-    const { data } = await api.get("/api/v1/catalog/category");
+    const { data } = await api.get("/api/v1/public/catalog/categories");
     setCategoryTypes(data.content);
   }
 

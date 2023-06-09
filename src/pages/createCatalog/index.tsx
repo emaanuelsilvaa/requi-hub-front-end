@@ -259,7 +259,20 @@ const CreateCatalog = () => {
             setOpenBackDropDialog(openBackDropDialog)
             setRepresentationTypes( representationTypes.filter(item => item.id !== option.id))
           } catch (error) {
-            alert("Erro ao obter dados de perfil");
+            alert(error.response.data.message);
+          } finally {
+          }
+    };
+
+    const deleteCategory = async (option : OptionType) => {
+        setOpenBackDropDialog(!openBackDropDialog)
+        try {
+            const { data } = await api.delete("api/v1/catalog/category/delete?id="+option.id);
+            await timeout(1000);
+            setOpenBackDropDialog(openBackDropDialog)
+            setCategoryTypesFromBack( categoryTypesFromBack.filter(item => item.id !== option.id))
+          } catch (error) {
+            alert(error.response.data.message);
           } finally {
           }
     };
@@ -297,7 +310,10 @@ const CreateCatalog = () => {
             setRepresentationTypes(types => ({ ...types }));
             setOpenBackDropDialog(openBackDropDialog)
         }catch(err){
+            
             setOpenBackDropDialog(openBackDropDialog)
+            alert(err.response.data.message)
+            
         }
         getAnsRepresentations()
         handleRepresentationClose();
@@ -515,7 +531,17 @@ const CreateCatalog = () => {
                                 selectOnFocus
                                 clearOnBlur
                                 handleHomeEndKeys
-                                renderOption={(props, option) => <li  {...props}>{option.type}</li>}
+                                renderOption={(props, option) => 
+                                    <Box sx={{display: 'flex',
+                                    justifyContent: 'space-between',
+                                    flexDirection: 'row',}}>
+                                        <li  {...props}>{option.type}</li> 
+                                        {option.isDefault == false ?
+                                        <Button size="small" color="error" onClick={e => deleteCategory(option)}>
+                                        Remover
+                                        </Button> : 
+                                        <></>}
+                                    </Box> }
                                 freeSolo
                                 renderInput={(params) => <TextField sx={style} variant="standard" {...params} label="Categoria" />}
                                 />
