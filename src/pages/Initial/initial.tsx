@@ -50,11 +50,9 @@ export default function initial() {
                     Sobre
                         </Typography>
                         <Typography variant="body1" gutterBottom color={'#051120'} sx={{ minWidth:250, maxWidth:1280}} align={"justify"}>
-                        Catálogos e modelos de requisitos reutilizáveis são recursos importantes que auxiliam o desenvolvimento de software.
-                        O desenvolvimento de um repositório web de catálogos e modelos permite que engenheiros de software consultem determinados 
-                        modelos que ajudam na tomada de decisões na construção de um software. Consequentemente, um repositório web possibilita 
-                        que os engenheiros de softwares tenham a disponibilidade de  interagirem e enriquecerem o repositório web.  
-                        A ideia deste  trabalho é elaborar um  repositório web de modelos e catálogos de requisitos
+                        Requihub é uma plataforma que tem o intuito de auxiliar desenvolvedores e pessoas da area de TI na elaboração de requisitos de software. 
+A plataforma permite que desenvolvedores acelerem o processo de construção de requisitos atraves do reuso. Para incentivar o reuso, 
+a plataforma propoem um ambiente eficiente para o compartilhamento e a utilização de catalogos e modelos. 
                         </Typography>
                 </Box>
 

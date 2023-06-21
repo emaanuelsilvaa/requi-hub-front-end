@@ -96,7 +96,7 @@ const SignUp = () => {
       >
         
         <Form onSubmit={handleSignUp}>
-          <h1>Cadastro</h1>
+          <h1>Cadastro </h1>  <a>já possui login ? <Link to="/Login">Realizar login</Link> </a>
           {error && <p>{error}</p>}
           <TextField id="standard-basic" sx={style} placeholder="Primeiro nome"  label="Primeiro nome" variant="standard" onChange={e => setFirstName(e.target.value) } />
           <TextField id="standard-basic" sx={style} placeholder="Ultimo nome"  label="Ultimo nome" variant="standard" onChange={e => setLastName(e.target.value) } />
@@ -113,12 +113,12 @@ const SignUp = () => {
           <TextField id="standard-basic" sx={style} type="password" label="Senha" variant="standard" placeholder="Sua senha"
             onChange={e => setPassword(e.target.value) }
           />
-          <TextField id="standard-basic" sx={style} type="password" label="Repita sua Senha" variant="standard" placeholder="Sua senha"
+          <TextField id="standard-basic" sx={style} type="password" label="Inserir senha novamente" variant="standard" placeholder="Sua senha"
             onChange={e => setPasswordRepeated(e.target.value) } 
           />
           <button type="submit">Cadastrar</button>
           <hr />
-          <a>já possui login ? <Link to="/Login">Realizar login</Link> </a>
+          
         </Form>
         {redirect && <Navigate to='/profile/:name' replace={true}/>}
 
@@ -126,7 +126,7 @@ const SignUp = () => {
         <Typography
           variant="h6"
           sx={{
-            m: 20,
+            m: 30,
             flexGrow: 1,
             fontFamily: 'Poppins',
             fontWeight: 1000,
