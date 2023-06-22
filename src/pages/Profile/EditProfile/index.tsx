@@ -63,6 +63,7 @@ const EditProfile = () => {
         /* inserir trycatch */
         let output = await api.get("/api/v1/users/email?email="+getUseEmail());
         console.log(output);
+        setNewPhoto(output.data.profilePhoto);
         return setProfileInfo(output.data);
       };
       useEffect(() => {
@@ -136,8 +137,10 @@ const EditProfile = () => {
                 const response = api.put("/api/v1/users/update", profile ).then(response => {
                     setOpenUpdateProfileBackDrop(openUpdateProfileBackDrop)
                     setOpenSnackBar(true);
+                    setNewPhoto(response.data.profilePhoto)
+
                 })
-                resolve(fileReader.result);
+                //resolve(fileReader.result);
             };
 
             fileReader.onerror = (error) => {

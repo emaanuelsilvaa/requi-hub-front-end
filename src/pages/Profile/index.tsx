@@ -21,6 +21,7 @@ import Grow from "@mui/material/Grow";
 import TablePagination from "@mui/material/TablePagination";
 import CircularProgress from "@mui/material/CircularProgress";
 import api from "../../services/api";
+import { setNewPhoto } from "../../services/auth";
 
 import CatalogFilters from "../../components/CatalogFilters";
 
@@ -128,6 +129,7 @@ const Profile = () => {
         },
       });
       setProfileInfo(data);
+      setNewPhoto(data.profilePhoto);
     } catch (error) {
       alert("Erro ao obter dados de perfil");
     } finally {
