@@ -1,5 +1,4 @@
 [[redirects]]
-    from = "/api/*"
-    to = "http://35.232.10.77:8080/:splat"
-    status = 200
-    force = true
+  from = "/*"
+  to = "/"
+  status = 200
