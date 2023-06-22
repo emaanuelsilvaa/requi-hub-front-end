@@ -1,1 +1,4 @@
-/api/* http://35.232.10.77:8080/:splat 200!
+[[redirects]]
+    from = "/api/*"
+    to = "http://35.232.10.77:8080/:splat 200!"
+    status = 200
