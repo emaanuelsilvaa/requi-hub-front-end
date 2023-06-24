@@ -2,7 +2,7 @@ import axios from "axios";
 import { getToken, logout } from "./auth";
 
 const api = axios.create({
-  baseURL: "https://requihub.com.br/api",
+  baseURL: "https://api.requihub.com.br",
 });
 
 api.interceptors.request.use(
