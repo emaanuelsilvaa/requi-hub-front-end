@@ -87,26 +87,24 @@ const Repository = () => {
     
     useEffect(() => {
         getAnsCatalogs();
-      }, [pageFilters]);
 
+      }, [pageFilters]);
 
     const handleChangePage = (newPage: number) => {
         setPageFilters({ ...pageFilters, currentPage: newPage });
       };
 
-
     async function getAnsCatalogs() {
         setIsLoading(true);
         console.log(pageFilters);
-        if(state.searchText != null){
-            setPageFilters({ ...pageFilters, title: state.searchText });
-        }
+
+        const title = state?.searchText ? state.searchText : pageFilters.title || ""
 
         try {
           const { data } = await api.get("/api/v1/public/catalog/filter", {
             params: {
               userId: "",
-              title: pageFilters.title || "" ,
+              title: title ,
               bibliographicReference: pageFilters.bibliographicReference || "" ,
               categoryType: pageFilters.categoryType || "",
               representationType: pageFilters.representationType || "",
@@ -116,6 +114,9 @@ const Repository = () => {
           });
     
           setCatalogPagination(data);
+          if(state?.searchText){
+            state.searchText = null;
+          } 
         } catch (error) {
           alert("Erro ao obter lista de repositórios");
         } finally {
