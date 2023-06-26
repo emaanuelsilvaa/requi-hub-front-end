@@ -17,6 +17,7 @@ import api from "../../services/api";
 import { getUseEmail } from "../../services/auth";
 import CatalogFilters from '../../components/CatalogFilters';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -65,6 +66,10 @@ const Repository = () => {
 
     const navigate = useNavigate();
 
+    const { state } = useLocation();
+
+    //console.log(state.searchText);
+
     const [isLoading, setIsLoading] = useState(false);
 
     
@@ -93,6 +98,10 @@ const Repository = () => {
     async function getAnsCatalogs() {
         setIsLoading(true);
         console.log(pageFilters);
+        if(state.searchText != null){
+            setPageFilters({ ...pageFilters, title: state.searchText });
+        }
+
         try {
           const { data } = await api.get("/api/v1/public/catalog/filter", {
             params: {

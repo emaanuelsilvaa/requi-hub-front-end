@@ -52,6 +52,7 @@ const SignUp = () => {
   };
   
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    setRedirect(true);
     if (reason === 'clickaway') {
       return;
     }
@@ -71,7 +72,6 @@ const SignUp = () => {
         const response = await api.post("/api/v1/public/auth/register", { firstName, lastName, email, password, sobre });
         setOpen(false);
         handleClick();
-        setRedirect(true);
         } catch (err) {
         console.log(err);
         setOpen(false);
@@ -120,7 +120,7 @@ const SignUp = () => {
           <hr />
           
         </Form>
-        {redirect && <Navigate to='/profile/:name' replace={true}/>}
+        {redirect && <Navigate to='/Login' replace={true}/>}
 
         <Divider sx={{ m: 4, backgroundColor: '#818E9B'}} orientation="vertical" flexItem/>
         <Typography
