@@ -38,7 +38,7 @@ export interface Catalog {
 
 
 const style = {
-    width: '300px',
+    width: '550px',
     background: '#fff',
     padding: '30px',
     margin: 2,
@@ -176,7 +176,8 @@ const ViewCatalog = () => {
                         justifyContent: 'left',
                         bgcolor: '#fff',
                         borderRadius: 4,
-                        pr: 8
+                        pr: 8,
+                        maxWidth: 150
                         }}  
                 >
                     
@@ -200,9 +201,9 @@ const ViewCatalog = () => {
                         bgcolor: '#eee',
                         cursor: 'pointer',
                         height: 400,
-                        minWidth: 500,
+                        minWidth: 400,
                         maxHeight: { xs: 433, md: 567 },
-                        maxWidth: { xs: 633, md: 767 },
+                        maxWidth: { xs: 133, md: 267 },
                         backgroundPosition: 'center',
                         backgroundSize: 'cover',
                         objectFit: 'cover'
