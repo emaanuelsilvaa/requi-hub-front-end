@@ -170,13 +170,13 @@ const Repository = () => {
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
                                 display: "-webkit-box",
-                                WebkitLineClamp: "2",
+                                WebkitLineClamp: "3",
                                 WebkitBoxOrient: "vertical",
                               }}
                               fontFamily="Poppins"
                               color={"#7B1026"}
                               gutterBottom
-                              variant="h5"
+                              fontSize={16}
                               component="div"
                             >
                               {item.title}

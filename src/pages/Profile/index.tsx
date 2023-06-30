@@ -284,7 +284,7 @@ const Profile = () => {
                               fontFamily="Poppins"
                               color={"#7B1026"}
                               gutterBottom
-                              variant="h5"
+                              fontSize={16}
                               component="div"
                             >
                               {item.title}

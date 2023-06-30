@@ -247,7 +247,7 @@ const ViewCatalog = () => {
                             {catalog && (
                                 <Typography fontFamily='Poppins' color={'#00000'}fontSize={15}> {catalog.bibliographicReference ? catalog.bibliographicReference : "Referencia nao cadastrada"} </Typography>
                             )}
-                            <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Autor </Typography>
+                            <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Inserido por </Typography>
                             {catalog && (
                                 <Typography fontFamily='Poppins' color={'#00000'}fontSize={15}> {catalog.author.firstName + " " + catalog.author.lastName } </Typography>
                             )}

@@ -34,7 +34,7 @@ const AppRoutes = () => (
       <Route path="/profile/edit" element={<EditProfile/>} />
       <Route path="/Criar" element={<CreateCatalog/>} />
       <Route path="/Catalogo" element={<ViewCatalog/>} />
-      <Route path="/Repositorios" element={<Repository/>} />
+      <Route path="/Catálogos" element={<Repository/>} />
     </Routes>
   </BrowserRouter>
 );

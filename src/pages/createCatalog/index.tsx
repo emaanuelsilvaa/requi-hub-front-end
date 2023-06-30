@@ -476,7 +476,7 @@ const CreateCatalog = () => {
                         <Box sx={{bgcolor: '#fff'}}>
                             <Form onSubmit={handleSignIn}>
                                 {error && <p>{error}</p>}
-                                <TextField sx={style} id="standard-text" label="Titulo" variant="standard"  onChange={e => setTitle(e.target.value) } />
+                                <TextField sx={style} id="standard-text" label="Titulo"  size="medium" variant="standard"  onChange={e => setTitle(e.target.value) } />
                                 <TextField sx={style} id="standard-description" label="Descrição" variant="standard" rows={2} multiline  onChange={e => setDescription(e.target.value) } />
                                 <TextField sx={style} id="standard-description" label="Referencia Bibliografica" variant="standard" rows={2} multiline  onChange={e => setBibliographicReference(e.target.value) } />
                                 
@@ -507,7 +507,7 @@ const CreateCatalog = () => {
                                 if (params.inputValue !== '') {
                                     filtered.push({
                                     inputValue: params.inputValue,
-                                    type: `Add "${params.inputValue}"`,
+                                    type: `Adicionar "${params.inputValue}"`,
                                     });
                                 }
 
@@ -543,7 +543,7 @@ const CreateCatalog = () => {
                                         <></>}
                                     </Box> }
                                 freeSolo
-                                renderInput={(params) => <TextField sx={style} variant="standard" {...params} label="Categoria" />}
+                                renderInput={(params) => <TextField helperText="Para incluir uma nova categoria. Escreva uma categoria diferente das pre definidas." sx={style} variant="standard" {...params} label="Categoria" />}
                                 />
 
                                 <Autocomplete
@@ -573,7 +573,7 @@ const CreateCatalog = () => {
                                 if (params.inputValue !== '') {
                                     filtered.push({
                                     inputValue: params.inputValue,
-                                    type: `Add "${params.inputValue}"`,
+                                    type: `Adicionar "${params.inputValue}"`,
                                     });
                                 }
 
@@ -611,7 +611,7 @@ const CreateCatalog = () => {
                                 }
                                 freeSolo
                                 renderInput={(params) => 
-                                <TextField sx={style} variant="standard" {...params} label="Tipo de representação" />}
+                                <TextField sx={style} helperText="Para incluir uma nova representação. Escreva uma representação diferente das pre definidas." variant="standard" {...params} label="Tipo de representação" />}
                                 />
                                 <Dialog open={openRepresentation} onClose={handleRepresentationClose}>
                                     <Backdrop

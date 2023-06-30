@@ -15,18 +15,18 @@ export const DragDropContainer = styled.div`
     border-radius: 10px;
     width: 400px;
     margin-top: 70px;
-    margin-right: 80px;
+    margin-right: 5px;
     height: 65%;
 `;
 
 export const Form = styled.form`
-  width: 300px;
+  width: 600px;
   background: #fff;
-  margin: 30px;
-  padding: 30px;
+  margin: 10px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  align-items: right;
+  align-items: left;
   hr {
     margin-bottom: 10px;
     margin-top: 25px;

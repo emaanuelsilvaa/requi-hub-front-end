@@ -42,7 +42,7 @@ export default function SearchField(props: TextFieldProps): JSX.Element {
     <>
       <form onSubmit={handleText}>
         <TextField
-          placeholder="Buscar no repositorio"
+          placeholder="Buscar catálogos com base no título"
           variant="outlined"
           fullWidth
           onChange={e => setSearchText(e.target.value)}

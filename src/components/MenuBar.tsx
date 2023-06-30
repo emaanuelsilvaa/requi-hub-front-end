@@ -19,7 +19,7 @@ export const isAuthenticated = () => localStorage.getItem(TOKEN_KEY) !== null;
 
 
 function ResponsiveAppBar() {
-  const pages = isAuthenticated() ?  ['Inicio', 'Criar', 'Repositorios'] : ['Inicio', 'Criar', 'Repositorios', 'Login', 'Cadastro'];
+  const pages = isAuthenticated() ?  ['Inicio', 'Criar', 'Catálogos'] : ['Inicio', 'Criar', 'Catálogos', 'Login', 'Cadastro'];
   const settings = ['Perfil', 'Sair'];  
 
     const navigate = useNavigate();
