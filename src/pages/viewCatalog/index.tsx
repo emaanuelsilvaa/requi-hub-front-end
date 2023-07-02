@@ -167,7 +167,7 @@ const ViewCatalog = () => {
                     justifyContent: 'center',
                     flexDirection: 'row',
                     mt:2,}}>
-                    <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={30} align={"center"}>Catalogo</Typography>   
+                    <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={30} align={"center"}>Catálogo</Typography>   
                 </Box>
                 
                 <Box
@@ -225,7 +225,7 @@ const ViewCatalog = () => {
                     >
                         <Box sx={style}>
 
-                            <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Titulo </Typography>
+                            <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Título </Typography>
                             {catalog && (
                                 <Typography fontFamily='Poppins' color={'#00000'} fontSize={15}> {catalog.title} </Typography>
                             )}
@@ -244,7 +244,7 @@ const ViewCatalog = () => {
                             {catalog && (
                                 <Typography fontFamily='Poppins' color={'#00000'}fontSize={15}> {catalog.representationTypeModel.type} </Typography>
                             )}
-                            <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Referencia bibliografica </Typography>
+                            <Typography fontFamily='Poppins' color={'#7B1026'} fontSize={20}> Referência bibliográfica </Typography>
                             {catalog && (
                                 <Typography fontFamily='Poppins' color={'#00000'}fontSize={15}> {catalog.bibliographicReference ? catalog.bibliographicReference : "Referencia nao cadastrada"} </Typography>
                             )}

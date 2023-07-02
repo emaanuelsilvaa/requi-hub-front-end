@@ -72,7 +72,6 @@ a plataforma propoem um ambiente eficiente para o compartilhamento e a utilizaç
                 <Typography fontWeight='bold' fontFamily='Poppins' color={'#FFFF'} fontSize={10} align={"center"}>
                     RequiHub (C) All rights Reserved
                 </Typography>
-                <GitHubIcon sx={{ color: '#FFFF', alignSelf: 'center', width: 20, height: 20, paddingY: 1 }} ></GitHubIcon>
             </Box>
         </Container>
 

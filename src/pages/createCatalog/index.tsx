@@ -400,7 +400,7 @@ const CreateCatalog = () => {
             </Snackbar>
             <Snackbar open={openSnackBarSuccess} autoHideDuration={6000} onClose={handleClose}  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
                 <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                Catalogo Cadastrado com Sucesso
+                Catálogo  Cadastrado com Sucesso
                 </Alert>
             </Snackbar>
             <MenuBar/>
@@ -420,7 +420,7 @@ const CreateCatalog = () => {
                     maxWidth: 2000
                 }}   
                 >
-                    <Typography mt={2} mb={0} fontWeight="md" fontFamily='Poppins' color={'#7B1026'} fontSize={30} align={"center"}> Criar Catalogo</Typography>
+                    <Typography mt={2} mb={0} fontWeight="md" fontFamily='Poppins' color={'#7B1026'} fontSize={30} align={"center"}> Criar Catálogo </Typography>
                     <Box
                         sx={{
                             display: 'flex',
@@ -476,9 +476,9 @@ const CreateCatalog = () => {
                         <Box sx={{bgcolor: '#fff'}}>
                             <Form onSubmit={handleSignIn}>
                                 {error && <p>{error}</p>}
-                                <TextField sx={style} id="standard-text" label="Titulo"  size="medium" variant="standard"  onChange={e => setTitle(e.target.value) } />
+                                <TextField sx={style} id="standard-text" label="Título"  size="medium" variant="standard"  onChange={e => setTitle(e.target.value) } />
                                 <TextField sx={style} id="standard-description" label="Descrição" variant="standard" rows={2} multiline  onChange={e => setDescription(e.target.value) } />
-                                <TextField sx={style} id="standard-description" label="Referencia Bibliografica" variant="standard" rows={2} multiline  onChange={e => setBibliographicReference(e.target.value) } />
+                                <TextField sx={style} id="standard-description" label="Referência Bibliográfica" variant="standard" rows={2} multiline  onChange={e => setBibliographicReference(e.target.value) } />
                                 
                                 <Autocomplete
                                 sx={style}
@@ -543,7 +543,7 @@ const CreateCatalog = () => {
                                         <></>}
                                     </Box> }
                                 freeSolo
-                                renderInput={(params) => <TextField helperText="Para incluir uma nova categoria. Escreva uma categoria diferente das pre definidas." sx={style} variant="standard" {...params} label="Categoria" />}
+                                renderInput={(params) => <TextField helperText="Para incluir uma nova categoria. Escreva uma categoria diferente das  predefinidas." sx={style} variant="standard" {...params} label="Categoria" />}
                                 />
 
                                 <Autocomplete
@@ -611,7 +611,7 @@ const CreateCatalog = () => {
                                 }
                                 freeSolo
                                 renderInput={(params) => 
-                                <TextField sx={style} helperText="Para incluir uma nova representação. Escreva uma representação diferente das pre definidas." variant="standard" {...params} label="Tipo de representação" />}
+                                <TextField sx={style} helperText="Para incluir uma nova representação. Escreva uma representação diferente das  predefinidas." variant="standard" {...params} label="Tipo de representação" />}
                                 />
                                 <Dialog open={openRepresentation} onClose={handleRepresentationClose}>
                                     <Backdrop
@@ -729,7 +729,6 @@ const CreateCatalog = () => {
                     <Typography fontWeight='bold' fontFamily='Poppins' color={'#FFFF'} fontSize={10} align={"center"}>
                         RequiHub (C) All rights Reserved
                     </Typography>
-                    <GitHubIcon sx={{ color: '#FFFF', alignSelf: 'center', width: 20, height: 20, paddingY: 1 }} ></GitHubIcon>
                 </Box>
             
                 </Box>
