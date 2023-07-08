@@ -51,8 +51,8 @@ export default function initial() {
                         </Typography>
                         <Typography variant="body1" gutterBottom color={'#051120'} sx={{ minWidth:250, maxWidth:1280}} align={"justify"}>
                         Requihub é uma plataforma que tem o intuito de auxiliar desenvolvedores e pessoas da area de TI na elaboração de requisitos de software. 
-A plataforma permite que desenvolvedores acelerem o processo de construção de requisitos atraves do reuso. Para incentivar o reuso, 
-a plataforma propoem um ambiente eficiente para o compartilhamento e a utilização de catalogos e modelos. 
+A plataforma permite que desenvolvedores acelerem o processo de construção de requisitos através do reuso. Para incentivar o reuso, 
+a plataforma propoem um ambiente eficiente para o compartilhamento e a utilização de catálogos e modelos. 
                         </Typography>
                 </Box>
 

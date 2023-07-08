@@ -234,7 +234,7 @@ const EditProfile = () => {
             </Backdrop>
             <Snackbar open={openSnackBar} autoHideDuration={6000} onClose={handleClose}  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
                 <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                Catalogo Cadastrado com Sucesso
+                Catálogo Cadastrado com Sucesso
                 </Alert>
             </Snackbar>  
         </Container>
